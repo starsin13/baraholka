@@ -5,11 +5,13 @@ $images = Get-ChildItem -Path $folder -File | Where-Object {
     $_.Extension.ToLower() -in @(".jpg", ".jpeg")
 } | Sort-Object Name
 
-# Создаём txt для каждого изображения, если его нет
+# Создаём txt для новых изображений
 foreach ($img in $images) {
+
     $txtPath = Join-Path $folder ($img.BaseName + ".txt")
 
     if (!(Test-Path $txtPath)) {
+
         @"
 Title
 Price
@@ -20,7 +22,8 @@ Description
     }
 }
 
-# Формируем список товаров
+
+# Создаём список товаров
 $items = @()
 
 foreach ($img in $images) {
@@ -33,18 +36,30 @@ foreach ($img in $images) {
 
     if (Test-Path $txtPath) {
 
-        $lines = Get-Content $txtPath -Encoding UTF8
+        # Читаем строки и убираем пробелы/табы
+        $lines = @(Get-Content $txtPath -Encoding UTF8 | ForEach-Object {
+            $_.Trim()
+        })
 
-        if ($lines.Count -ge 1) { $title = $lines[0] }
-        if ($lines.Count -ge 2) { $price = $lines[1] }
+        if ($lines.Count -ge 1 -and $lines[0] -ne "") {
+            $title = $lines[0]
+        }
 
-        # Всё после первых двух строк становится описанием
+        if ($lines.Count -ge 2 -and $lines[1] -ne "") {
+            $price = $lines[1]
+        }
+
         if ($lines.Count -gt 2) {
-            $desc = ($lines | Select-Object -Skip 2) -join "<br>"
+
+            $descLines = $lines | Select-Object -Skip 2 | Where-Object {
+                $_ -ne ""
+            }
+
+            $desc = $descLines -join "<br>"
         }
     }
 
-    $items += @{
+    $items += [PSCustomObject]@{
         img   = "$folder/$($img.Name)"
         title = $title
         price = $price
@@ -52,20 +67,29 @@ foreach ($img in $images) {
     }
 }
 
-# Преобразуем в JSON
+
+# JSON
 $json = $items | ConvertTo-Json -Compress
 
-# Читаем index.html
+
+# Обновляем index.html
 $html = Get-Content -Path index.html -Raw
 
-# Заменяем массив data
 $pattern = 'const data = \[.*?\];'
+
 $newData = "const data = $json;"
 
-$newHtml = [regex]::Replace($html, $pattern, $newData, "Singleline")
+$newHtml = [regex]::Replace(
+    $html,
+    $pattern,
+    $newData,
+    "Singleline"
+)
+
 
 # Сохраняем
 $newHtml | Set-Content -Path index.html -Encoding UTF8
 
+
 Write-Host ""
-Write-Host "✅ Updated! Found $($items.Count) image(s)."
+Write-Host "Updated! Found $($items.Count) image(s)."
