@@ -244,6 +244,12 @@
             return params.get('id');
         }
 
+        function updateURL(id) {
+            const baseUrl = window.location.pathname;
+            const newUrl = id ? `${baseUrl}?id=${id}` : baseUrl;
+            window.history.pushState({}, '', newUrl);
+        }
+
         function render(filter = '') {
             const id = getItemIdFromURL();
             let filtered = data;
@@ -272,7 +278,7 @@
             }
 
             gallery.innerHTML = filtered.map(item => `
-                <div class="card" onclick="openImage('${item.img}')">
+                <div class="card" onclick="openItem('${item.id}')">
                     <img src="${item.img}" alt="${item.title}" loading="lazy" />
                     <div class="card-body">
                         <div class="card-title">${item.title}</div>
@@ -287,12 +293,28 @@
             `).join('');
         }
 
-        function goBack() {
-            window.history.pushState({}, '', window.location.pathname);
+        function openItem(id) {
+            updateURL(id);
             render();
         }
 
-        searchInput.addEventListener('input', (e) => render(e.target.value));
+        function goBack() {
+            updateURL(null);
+            render();
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            if (getItemIdFromURL()) {
+                updateURL(null);
+            }
+            render(e.target.value);
+        });
+
+        // Обработчик кнопки "Назад" в браузере
+        window.addEventListener('popstate', () => {
+            render();
+        });
+
         render();
 
         function openImage(src) {
