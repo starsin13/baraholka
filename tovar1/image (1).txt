@@ -1,4 +1,4 @@
 ﻿image (1)
-Имя продукта
+Product name
 Price
 Description
