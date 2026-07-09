@@ -1,4 +1,4 @@
 ﻿image (1)
-Проверка
-Проверка
-Проверка2
+Product name
+Price
+Description

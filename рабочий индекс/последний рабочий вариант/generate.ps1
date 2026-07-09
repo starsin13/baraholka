@@ -29,29 +29,21 @@ foreach ($file in $files) {
 
     $txt = Join-Path $folder ($id + ".txt")
 
-    # Создаем txt-шаблон, если его нет
-    if (!(Test-Path $txt)) {
-        @(
-            $id
-            "Product name"
-            "Price"
-            "Description"
-        ) | Out-File $txt -Encoding UTF8
-    }
+    if (Test-Path $txt) {
 
-    # Читаем описание из txt
-    $lines = @(Get-Content $txt -Encoding UTF8)
+        $lines = @(Get-Content $txt -Encoding UTF8)
 
-    if ($lines.Count -ge 2) {
-        $title = [string]$lines[1]
-    }
+        if ($lines.Count -ge 2) {
+            $title = [string]$lines[1]
+        }
 
-    if ($lines.Count -ge 3) {
-        $price = [string]$lines[2]
-    }
+        if ($lines.Count -ge 3) {
+            $price = [string]$lines[2]
+        }
 
-    if ($lines.Count -ge 4) {
-        $desc = [string]$lines[3]
+        if ($lines.Count -ge 4) {
+            $desc = [string]$lines[3]
+        }
     }
 
     $items += [PSCustomObject]@{
@@ -72,13 +64,7 @@ $json = $items | ConvertTo-Json -Compress -Depth 5
 
 $html = Get-Content $path -Raw -Encoding UTF8
 
-# Правильная замена массива данных в index.html
-$html = [regex]::Replace(
-    $html,
-    'const data\s*=\s*\[.*?\];',
-    "const data = $json;",
-    [System.Text.RegularExpressions.RegexOptions]::Singleline
-)
+$html = $html -replace 'const data\s*=\s*\[.*?\];', "const data = $json;"
 
 [System.IO.File]::WriteAllText(
     $path,
