@@ -95,6 +95,19 @@ header p {
     margin-top: 8px;
 }
 
+.visitor-counter {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    border: 1px solid #334155;
+    z-index: 1000;
+}
+
 footer {
     text-align: center;
     padding: 40px 0 10px;
@@ -145,6 +158,10 @@ footer a {
 </head>
 
 <body>
+
+<div class="visitor-counter">
+    Views: <span id="busuanzi_value_page_pv">0</span>
+</div>
 
 <header>
     <h1>Gallery</h1>
@@ -223,8 +240,7 @@ function openImage(src) {
 </script>
 
 
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
 </body>
 </html>
-
-
-
