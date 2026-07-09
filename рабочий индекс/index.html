@@ -1,0 +1,247 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gallery</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #0b1120;
+    padding: 40px 20px;
+    color: #e8edf5;
+}
+
+header {
+    text-align: center;
+    padding: 20px 0 40px;
+}
+
+h1 {
+    font-size: 2.4rem;
+    font-weight: 500;
+}
+
+header p {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.card {
+    background: #1e293b;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #334155;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: #60a5fa;
+}
+
+.card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    background: #0f172a;
+}
+
+.card-body {
+    padding: 12px 16px 16px;
+}
+
+.card-title {
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+.card-price {
+    color: #60a5fa;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-top: 2px;
+}
+
+.card-desc {
+    color: #94a3b8;
+    font-size: 0.85rem;
+    margin-top: 4px;
+}
+
+.card-id {
+    color: #64748b;
+    font-size: 0.7rem;
+    margin-top: 8px;
+}
+
+.visitor-counter {
+    position: fixed;
+    bottom: 15px;
+    right: 20px;
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    border: 1px solid #334155;
+    z-index: 1000;
+}
+
+footer {
+    text-align: center;
+    padding: 40px 0 10px;
+    color: #64748b;
+    font-size: 0.9rem;
+    border-top: 1px solid #1e293b;
+    margin-top: 40px;
+}
+
+footer a {
+    color: #94a3b8;
+    text-decoration: none;
+}
+
+#modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(11,17,32,0.92);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+#modal img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+@media (max-width:600px) {
+    body {
+        padding:20px 12px;
+    }
+
+    .card img {
+        height:160px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="visitor-counter">
+    Views: <span id="busuanzi_value_page_pv">0</span>
+</div>
+
+<header>
+    <h1>Gallery</h1>
+    <p>Photos from tovar1 folder</p>
+</header>
+
+
+<main id="gallery" class="grid"></main>
+
+
+<footer>
+    <p>
+        Contact:
+        <a href="tel:+70000000000">
+            +7 (000) 000-00-00
+        </a>
+    </p>
+</footer>
+
+
+<div id="modal" onclick="this.style.display='none'">
+    <img id="modalImg" src="" />
+</div>
+
+
+<script>
+
+const data = [{"img":"tovar1/549193520.jpg","id":"549193520","title":"Красивые камни","price":"10000р","desc":"Лучшие камни с лазурного берега"},{"img":"tovar1/7640.jpg","id":"7640","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/image123.JPG","id":"image123","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/image23.JPG","id":"image23","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"Product name","price":"Price","desc":"Description"}];
+
+
+const gallery = document.getElementById('gallery');
+
+
+gallery.innerHTML = data.map(item => `
+
+<div class="card" onclick="openImage('${item.img}')">
+
+    <img src="${item.img}" alt="${item.title}" loading="lazy">
+
+    <div class="card-body">
+
+        <div class="card-title">
+            ${item.title}
+        </div>
+
+        ${item.price ? `
+        <div class="card-price">
+            ${item.price}
+        </div>
+        ` : ''}
+
+        ${item.desc ? `
+        <div class="card-desc">
+            ${item.desc}
+        </div>
+        ` : ''}
+
+        ${item.id ? `
+        <div class="card-id">
+            ID: ${item.id}
+        </div>
+        ` : ''}
+
+    </div>
+
+</div>
+
+`).join('');
+
+
+function openImage(src) {
+    document.getElementById('modalImg').src = src;
+    document.getElementById('modal').style.display = 'flex';
+}
+
+</script>
+
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+</html>
+
