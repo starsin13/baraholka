@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+    <style>
+        /* весь стиль как был */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0b1120; padding: 40px 20px; color: #e8edf5; }
+        header { text-align: center; padding: 20px 0 40px; }
+        h1 { font-size: 2.4rem; font-weight: 500; color: #e8edf5; }
+        header p { color: #94a3b8; font-size: 1rem; margin-top: 4px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e293b; border-radius: 16px; overflow: hidden; border: 1px solid #334155; transition: transform 0.2s, border-color 0.2s; cursor: pointer; }
+        .card:hover { transform: translateY(-4px); border-color: #60a5fa; }
+        .card img { width: 100%; height: 200px; object-fit: cover; display: block; background: #0f172a; }
+        .card-body { padding: 12px 16px 16px; }
+        .card-title { font-weight: 500; font-size: 1rem; color: #e8edf5; }
+        .card-price { color: #60a5fa; font-weight: 600; font-size: 0.95rem; margin-top: 2px; }
+        .card-desc { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
+        footer { text-align: center; padding: 40px 0 10px; color: #64748b; font-size: 0.9rem; border-top: 1px solid #1e293b; margin-top: 40px; }
+        footer a { color: #94a3b8; text-decoration: none; border-bottom: 1px solid #334155; }
+        footer a:hover { color: #60a5fa; border-color: #60a5fa; }
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 17, 32, 0.92); backdrop-filter: blur(8px); cursor: pointer; z-index: 1000; align-items: center; justify-content: center; }
+        #modal img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 12px; border: 1px solid #334155; }
+        @media (max-width: 600px) { body { padding: 20px 12px; } h1 { font-size: 1.8rem; } .grid { gap: 14px; } .card img { height: 160px; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Gallery</h1>
+        <p>Photos from tovar1 folder</p>
+    </header>
+    <main id="gallery" class="grid"></main>
+    <footer>
+        <p>Contact: <a href="tel:+70000000000">+7 (000) 000-00-00</a></p>
+    </footer>
+    <div id="modal" onclick="this.style.display='none'">
+        <img id="modalImg" src="" />
+    </div>
+    <script>
+        fetch('items.json')
+            .then(res => res.json())
+            .then(data => {
+                const gallery = document.getElementById('gallery');
+                gallery.innerHTML = data.map(item => `
+                    <div class="card" onclick="openImage('${item.img}')">
+                        <img src="${item.img}" alt="${item.title}" loading="lazy" />
+                        <div class="card-body">
+                            <div class="card-title">${item.title}</div>
+                            ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
+                            ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            })
+            .catch(() => {
+                document.getElementById('gallery').innerHTML = '<p style="color:#94a3b8;text-align:center;">No photos found. Run generate.ps1</p>';
+            });
+
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
