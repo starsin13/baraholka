@@ -1,35 +1,33 @@
-$path = "C:\baraholka\index.html"
-$folder = "C:\baraholka\tovar1"
+$root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
+$folder = Join-Path $root "tovar1"
+$path = Join-Path $root "index.html"
+
+if (!(Test-Path $folder)) {
+    Write-Host "ERROR: Folder tovar1 not found"
+    exit 1
+}
 
 if (!(Test-Path $path)) {
     Write-Host "ERROR: index.html not found"
     exit 1
 }
 
-if (!(Test-Path $folder)) {
-    Write-Host "ERROR: tovar1 folder not found"
-    exit 1
-}
-
-
 $items = @()
 
+$files = Get-ChildItem $folder -File | Where-Object {
+    $_.Extension -match "\.(jpg|jpeg|png|webp)$"
+}
 
-Get-ChildItem $folder -File | Where-Object {
-    $_.Extension -match "\.(jpg|jpeg|png|webp|gif)$"
-} | ForEach-Object {
+foreach ($file in $files) {
 
-    $file = $_
-    $id = [string]$file.BaseName
+    $id = $file.BaseName
 
     $title = "Product name"
     $price = "Price"
     $desc = "Description"
 
-
     $txt = Join-Path $folder ($id + ".txt")
-
 
     if (Test-Path $txt) {
 
@@ -48,9 +46,8 @@ Get-ChildItem $folder -File | Where-Object {
         }
     }
 
-
     $items += [PSCustomObject]@{
-        img   = [string]"tovar1/$($file.Name)"
+        img   = "tovar1/$($file.Name)"
         id    = $id
         title = $title
         price = $price
@@ -58,51 +55,21 @@ Get-ChildItem $folder -File | Where-Object {
     }
 }
 
-
 if ($items.Count -eq 0) {
     Write-Host "ERROR: No images found"
     exit 1
 }
 
-
-# Создаем JSON-массив для PowerShell 5.1
-$jsonParts = @()
-
-foreach ($item in $items) {
-    $jsonParts += ($item | ConvertTo-Json -Compress)
-}
-
-$json = "[" + ($jsonParts -join ",") + "]"
-
+$json = $items | ConvertTo-Json -Compress -Depth 5
 
 $html = Get-Content $path -Raw -Encoding UTF8
 
-
-# Ищем блок const data = [...]
-$pattern = '(?s)const data\s*=\s*\[.*?\];'
-
-
-if ($html -notmatch $pattern) {
-    Write-Host "ERROR: DATA block not found"
-    exit 1
-}
-
-
-$newBlock = "const data = $json;"
-
-
-$html = [regex]::Replace(
-    $html,
-    $pattern,
-    $newBlock
-)
-
+$html = $html -replace 'const data\s*=\s*\[.*?\];', "const data = $json;"
 
 [System.IO.File]::WriteAllText(
     $path,
     $html,
     (New-Object System.Text.UTF8Encoding($false))
 )
-
 
 Write-Host "Gallery generated. Items: $($items.Count)"
