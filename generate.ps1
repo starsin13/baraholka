@@ -43,7 +43,7 @@ $html = Get-Content -Path index.html -Raw
 # Заменяем массив data
 $pattern = 'const data = \[.*?\];'
 $newData = "const data = $json;"
-$newHtml = $html -replace $pattern, $newData, 1
+$newHtml = $html -replace $pattern, $newData
 
 # Сохраняем
 $newHtml | Set-Content -Path index.html -Encoding UTF8
