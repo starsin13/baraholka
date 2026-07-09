@@ -1,11 +1,11 @@
 $folder = "tovar1"
 
-# Получаем все изображения (.jpg/.jpeg в любом регистре)
 $images = Get-ChildItem -Path $folder -File | Where-Object {
     $_.Extension.ToLower() -in @(".jpg", ".jpeg")
 } | Sort-Object Name
 
-# Создаём txt для новых изображений
+
+# Создание txt для новых картинок
 foreach ($img in $images) {
 
     $txtPath = Join-Path $folder ($img.BaseName + ".txt")
@@ -13,9 +13,10 @@ foreach ($img in $images) {
     if (!(Test-Path $txtPath)) {
 
         @"
-Title
-Price
-Description
+$($img.BaseName)
+Название товара
+Цена
+Описание
 "@ | Set-Content -Path $txtPath -Encoding UTF8
 
         Write-Host "Created: $txtPath"
@@ -23,35 +24,30 @@ Description
 }
 
 
-# Создаём список товаров
 $items = @()
 
 foreach ($img in $images) {
 
     $txtPath = Join-Path $folder ($img.BaseName + ".txt")
 
+    $id = $img.BaseName
     $title = $img.BaseName
     $price = ""
     $desc = ""
 
     if (Test-Path $txtPath) {
 
-        # Читаем строки и убираем пробелы/табы
         $lines = @(Get-Content $txtPath -Encoding UTF8 | ForEach-Object {
             $_.Trim()
         })
 
-        if ($lines.Count -ge 1 -and $lines[0] -ne "") {
-            $title = $lines[0]
-        }
+        if ($lines.Count -ge 1) { $id = $lines[0] }
+        if ($lines.Count -ge 2) { $title = $lines[1] }
+        if ($lines.Count -ge 3) { $price = $lines[2] }
 
-        if ($lines.Count -ge 2 -and $lines[1] -ne "") {
-            $price = $lines[1]
-        }
+        if ($lines.Count -gt 3) {
 
-        if ($lines.Count -gt 2) {
-
-            $descLines = $lines | Select-Object -Skip 2 | Where-Object {
+            $descLines = $lines | Select-Object -Skip 3 | Where-Object {
                 $_ -ne ""
             }
 
@@ -59,8 +55,10 @@ foreach ($img in $images) {
         }
     }
 
+
     $items += [PSCustomObject]@{
         img   = "$folder/$($img.Name)"
+        id    = $id
         title = $title
         price = $price
         desc  = $desc
@@ -68,11 +66,9 @@ foreach ($img in $images) {
 }
 
 
-# JSON
 $json = $items | ConvertTo-Json -Compress
 
 
-# Обновляем index.html
 $html = Get-Content -Path index.html -Raw
 
 $pattern = 'const data = \[.*?\];'
@@ -86,8 +82,6 @@ $newHtml = [regex]::Replace(
     "Singleline"
 )
 
-
-# Сохраняем
 $newHtml | Set-Content -Path index.html -Encoding UTF8
 
 
