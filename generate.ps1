@@ -1,55 +1,39 @@
-$folder = "tovar1"
-
-# Find images
-$images = Get-ChildItem -Path $folder -File | Where-Object {
-    $_.Extension.ToLower() -in @(".jpg", ".jpeg")
-} | Sort-Object Name
+$path = "C:\baraholka\index.html"
+$folder = "C:\baraholka\tovar1"
 
 
-# Create txt for new images
-foreach ($img in $images) {
+if (!(Test-Path $path)) {
+    Write-Host "ERROR: index.html not found"
+    exit 1
+}
 
-    $txtPath = Join-Path $folder ($img.BaseName + ".txt")
-
-    if (!(Test-Path $txtPath)) {
-
-        $content = @(
-            $img.BaseName
-            "Product name"
-            "Price"
-            "Description"
-        )
-
-        Set-Content -Path $txtPath -Value $content -Encoding UTF8
-
-        Write-Host "Created: $txtPath"
-    }
+if (!(Test-Path $folder)) {
+    Write-Host "ERROR: tovar1 folder not found"
+    exit 1
 }
 
 
-# Build items
 $items = @()
 
-foreach ($img in $images) {
 
-    $txtPath = Join-Path $folder ($img.BaseName + ".txt")
+Get-ChildItem $folder -File | Where-Object {
+    $_.Extension -match "\.(jpg|jpeg|png|webp|gif)$"
+} | ForEach-Object {
 
-    $id = [string]$img.BaseName
+    $file = $_
+    $id = [string]$file.BaseName
+
     $title = "Product name"
     $price = "Price"
     $desc = "Description"
 
 
-    if (Test-Path $txtPath) {
-
-        $lines = @(Get-Content -Path $txtPath -Encoding UTF8 | ForEach-Object {
-            [string]$_
-        })
+    $txt = Join-Path $folder ($id + ".txt")
 
 
-        if ($lines.Count -ge 1) {
-            $id = [string]$lines[0]
-        }
+    if (Test-Path $txt) {
+
+        $lines = @(Get-Content $txt -Encoding UTF8)
 
         if ($lines.Count -ge 2) {
             $title = [string]$lines[1]
@@ -60,42 +44,65 @@ foreach ($img in $images) {
         }
 
         if ($lines.Count -ge 4) {
-
-            $desc = ($lines | Select-Object -Skip 3) -join "<br>"
+            $desc = [string]$lines[3]
         }
     }
 
 
     $items += [PSCustomObject]@{
-        img = "$folder/$($img.Name)"
-        id = $id
+        img   = [string]"tovar1/$($file.Name)"
+        id    = $id
         title = $title
         price = $price
-        desc = $desc
+        desc  = $desc
     }
 }
 
 
-# Convert to JSON
-$json = $items | ConvertTo-Json -Compress
+if ($items.Count -eq 0) {
+    Write-Host "ERROR: No images found"
+    exit 1
+}
 
 
-# Update index.html
-$html = Get-Content -Path index.html -Raw -Encoding UTF8
+# Создаем JSON-массив для PowerShell 5.1
+$jsonParts = @()
 
-$pattern = 'const data = \[.*?\];'
+foreach ($item in $items) {
+    $jsonParts += ($item | ConvertTo-Json -Compress)
+}
 
-$newHtml = [regex]::Replace(
+$json = "[" + ($jsonParts -join ",") + "]"
+
+
+$html = Get-Content $path -Raw -Encoding UTF8
+
+
+# Ищем блок const data = [...]
+$pattern = '(?s)const data\s*=\s*\[.*?\];'
+
+
+if ($html -notmatch $pattern) {
+    Write-Host "ERROR: DATA block not found"
+    exit 1
+}
+
+
+$newBlock = "const data = $json;"
+
+
+$html = [regex]::Replace(
     $html,
     $pattern,
-    "const data = $json;",
-    "Singleline"
+    $newBlock
 )
 
 
-# Save index.html
-Set-Content -Path index.html -Value $newHtml -Encoding UTF8
+[System.IO.File]::WriteAllText(
+    $path,
+    $html,
+    (New-Object System.Text.UTF8Encoding($false))
+)
 
 
-Write-Host ""
-Write-Host "Updated! Found $($items.Count) image(s)."
+Write-Host "Gallery generated. Items: $($items.Count)"

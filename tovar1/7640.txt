@@ -1,4 +1,4 @@
 ﻿7640
-Product name
+Проверка
 Price
 Description
