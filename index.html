@@ -38,6 +38,24 @@
         .search-box input:focus { border-color: #60a5fa; }
         .search-box input::placeholder { color: #64748b; }
 
+        .back-btn {
+            display: inline-block;
+            margin: 10px auto 20px;
+            padding: 8px 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+        }
+
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -190,8 +208,11 @@
         <p>Photos from tovar1 folder</p>
     </header>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="🔍 Search by name..." />
+    <div id="controls" style="text-align:center;">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Search by name..." />
+        </div>
+        <div id="backButtonContainer"></div>
     </div>
 
     <main id="gallery" class="grid"></main>
@@ -207,17 +228,43 @@
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
     <script>
-        const data = [{"img":"tovar1/7640.jpg","id":"7640","title":"Проверка","price":"Price","desc":"Description"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"Проверка","price":"Проверка","desc":"Проверка2"},{"img":"tovar1/image123.JPG","id":"image123","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"Product name","price":"Price","desc":"Description"}];
+        const data = [
+            {"img":"tovar1/7640.jpg","id":"7640","title":"Проверка","price":"Price","desc":"Description"},
+            {"img":"tovar1/image (1).jpg","id":"image (1)","title":"Проверка","price":"Проверка","desc":"Проверка2"},
+            {"img":"tovar1/image123.JPG","id":"image123","title":"Product name","price":"Price","desc":"Description"},
+            {"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"Product name","price":"Price","desc":"Description"}
+        ];
 
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
+        const backContainer = document.getElementById('backButtonContainer');
+
+        function getItemIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
 
         function render(filter = '') {
-            const filtered = data.filter(item =>
-                item.title.toLowerCase().includes(filter.toLowerCase()) ||
-                item.desc.toLowerCase().includes(filter.toLowerCase()) ||
-                item.id.toLowerCase().includes(filter.toLowerCase())
-            );
+            const id = getItemIdFromURL();
+            let filtered = data;
+
+            if (id) {
+                filtered = data.filter(item => item.id === id);
+                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Back to all</button>`;
+                if (filtered.length === 0) {
+                    gallery.innerHTML = `<div class="no-results">😕 Item not found</div>`;
+                    return;
+                }
+            } else {
+                backContainer.innerHTML = '';
+                if (filter) {
+                    filtered = data.filter(item =>
+                        item.title.toLowerCase().includes(filter.toLowerCase()) ||
+                        item.desc.toLowerCase().includes(filter.toLowerCase()) ||
+                        item.id.toLowerCase().includes(filter.toLowerCase())
+                    );
+                }
+            }
 
             if (filtered.length === 0) {
                 gallery.innerHTML = `<div class="no-results">😕 No results found</div>`;
@@ -232,12 +279,17 @@
                         ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
                         ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
                         ${item.id ? `<div class="card-id">ID: ${item.id}</div>` : ''}
-                        <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}')">
+                        <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}', '${item.id}')">
                             📤 Share
                         </button>
                     </div>
                 </div>
             `).join('');
+        }
+
+        function goBack() {
+            window.history.pushState({}, '', window.location.pathname);
+            render();
         }
 
         searchInput.addEventListener('input', (e) => render(e.target.value));
@@ -248,21 +300,22 @@
             document.getElementById('modal').style.display = 'flex';
         }
 
-        function shareItem(title, img) {
-            const url = window.location.href.split('?')[0];
-            const text = `Check this: ${title} - ${url}`;
+        function shareItem(title, img, id) {
+            const baseUrl = window.location.href.split('?')[0];
+            const itemUrl = `${baseUrl}?id=${id}`;
+            const text = `Check this: ${title} - ${itemUrl}`;
+
             if (navigator.share) {
-                navigator.share({ title, text, url });
+                navigator.share({ title, text, url: itemUrl });
             } else {
-                navigator.clipboard?.writeText(`${title} - ${url}`).then(() => {
+                navigator.clipboard?.writeText(`${title} - ${itemUrl}`).then(() => {
                     alert('Link copied to clipboard!');
                 }).catch(() => {
-                    prompt('Copy this link:', `${title} - ${url}`);
+                    prompt('Copy this link:', `${title} - ${itemUrl}`);
                 });
             }
         }
 
-        // Кнопка "Наверх"
         const topBtn = document.getElementById('topBtn');
         window.addEventListener('scroll', () => {
             topBtn.classList.toggle('visible', window.scrollY > 300);
