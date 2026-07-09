@@ -40,24 +40,23 @@
         <img id="modalImg" src="" />
     </div>
     <script>
-        fetch('https://raw.githubusercontent.com/starsin13/baraholka/master/items.json')
-            .then(res => res.json())
-            .then(data => {
-                const gallery = document.getElementById('gallery');
-                gallery.innerHTML = data.map(item => `
-                    <div class="card" onclick="openImage('${item.img}')">
-                        <img src="${item.img}" alt="${item.title}" loading="lazy" />
-                        <div class="card-body">
-                            <div class="card-title">${item.title}</div>
-                            ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
-                            ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
-                        </div>
-                    </div>
-                `).join('');
-            })
-            .catch(() => {
-                document.getElementById('gallery').innerHTML = '<p style="color:#94a3b8;text-align:center;">No photos found. Run generate.ps1</p>';
-            });
+        const data = [
+            {"price":"1500р","img":"tovar1/7640.jpg","title":"Картинка","desc":"Просто описание для сайта"},
+            {"price":"Price","img":"tovar1/image123.JPG","title":"Title","desc":"Description"},
+            {"price":"1000р","img":"tovar1/image23.JPG","title":"Товар2","desc":"Описание для описания"}
+        ];
+
+        const gallery = document.getElementById('gallery');
+        gallery.innerHTML = data.map(item => `
+            <div class="card" onclick="openImage('${item.img}')">
+                <img src="${item.img}" alt="${item.title}" loading="lazy" />
+                <div class="card-body">
+                    <div class="card-title">${item.title}</div>
+                    ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
+                    ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
+                </div>
+            </div>
+        `).join('');
 
         function openImage(src) {
             document.getElementById('modalImg').src = src;
