@@ -1,3 +1,4 @@
-﻿Прико
-3000
-Есть несколько
+﻿smailiki-zheltye-shary-ulybki
+Product name
+Price
+Description

@@ -1,88 +1,100 @@
 $folder = "tovar1"
 
+# Find images
 $images = Get-ChildItem -Path $folder -File | Where-Object {
     $_.Extension.ToLower() -in @(".jpg", ".jpeg")
 } | Sort-Object Name
 
 
-# Создание txt для новых картинок
+# Create txt for new images
 foreach ($img in $images) {
 
     $txtPath = Join-Path $folder ($img.BaseName + ".txt")
 
     if (!(Test-Path $txtPath)) {
 
-        @"
-$($img.BaseName)
-Название товара
-Цена
-Описание
-"@ | Set-Content -Path $txtPath -Encoding UTF8
+        $content = @(
+            $img.BaseName
+            "Product name"
+            "Price"
+            "Description"
+        )
+
+        Set-Content -Path $txtPath -Value $content -Encoding UTF8
 
         Write-Host "Created: $txtPath"
     }
 }
 
 
+# Build items
 $items = @()
 
 foreach ($img in $images) {
 
     $txtPath = Join-Path $folder ($img.BaseName + ".txt")
 
-    $id = $img.BaseName
-    $title = $img.BaseName
-    $price = ""
-    $desc = ""
+    $id = [string]$img.BaseName
+    $title = "Product name"
+    $price = "Price"
+    $desc = "Description"
+
 
     if (Test-Path $txtPath) {
 
-        $lines = @(Get-Content $txtPath -Encoding UTF8 | ForEach-Object {
-            $_.Trim()
+        $lines = @(Get-Content -Path $txtPath -Encoding UTF8 | ForEach-Object {
+            [string]$_
         })
 
-        if ($lines.Count -ge 1) { $id = $lines[0] }
-        if ($lines.Count -ge 2) { $title = $lines[1] }
-        if ($lines.Count -ge 3) { $price = $lines[2] }
 
-        if ($lines.Count -gt 3) {
+        if ($lines.Count -ge 1) {
+            $id = [string]$lines[0]
+        }
 
-            $descLines = $lines | Select-Object -Skip 3 | Where-Object {
-                $_ -ne ""
-            }
+        if ($lines.Count -ge 2) {
+            $title = [string]$lines[1]
+        }
 
-            $desc = $descLines -join "<br>"
+        if ($lines.Count -ge 3) {
+            $price = [string]$lines[2]
+        }
+
+        if ($lines.Count -ge 4) {
+
+            $desc = ($lines | Select-Object -Skip 3) -join "<br>"
         }
     }
 
 
     $items += [PSCustomObject]@{
-        img   = "$folder/$($img.Name)"
-        id    = $id
+        img = "$folder/$($img.Name)"
+        id = $id
         title = $title
         price = $price
-        desc  = $desc
+        desc = $desc
     }
 }
 
 
+# Convert to JSON
 $json = $items | ConvertTo-Json -Compress
 
 
-$html = Get-Content -Path index.html -Raw
+# Update index.html
+$html = Get-Content -Path index.html -Raw -Encoding UTF8
 
 $pattern = 'const data = \[.*?\];'
-
-$newData = "const data = $json;"
 
 $newHtml = [regex]::Replace(
     $html,
     $pattern,
-    $newData,
+    "const data = $json;",
     "Singleline"
 )
 
-$newHtml | Set-Content -Path index.html -Encoding UTF8
+
+# Save index.html
+Set-Content -Path index.html -Value $newHtml -Encoding UTF8
 
 
 Write-Host ""

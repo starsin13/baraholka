@@ -1,3 +1,4 @@
-﻿Title
+﻿image (1)
+Product name
 Price
 Description

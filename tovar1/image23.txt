@@ -1,4 +1,4 @@
-﻿Товар2	
-1000р
-Описание для описания
-
+﻿image23
+Product name
+Price
+Description

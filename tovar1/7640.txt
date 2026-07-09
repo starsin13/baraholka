@@ -1,3 +1,4 @@
-﻿Картинка
-1500р
-Просто описание для сайта
+﻿7640
+Product name
+Price
+Description
