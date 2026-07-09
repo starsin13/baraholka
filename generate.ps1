@@ -1,7 +1,6 @@
 $folder = "tovar1"
 
-if (!(Test-Path $folder)) { mkdir $folder }
-
+# Создаём txt для каждого jpg, если его нет
 Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
     $txtPath = "$folder\$($_.BaseName).txt"
     if (!(Test-Path $txtPath)) {
@@ -10,6 +9,7 @@ Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
     }
 }
 
+# Читаем фото и txt
 $items = @()
 Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
     $name = $_.BaseName
@@ -20,22 +20,32 @@ Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
     $desc = ""
     
     if (Test-Path $txtPath) {
-        $lines = Get-Content -Path $txtPath -Encoding UTF8 -Raw
-        $lines = $lines -split "`r`n|`n"
-        if ($lines.Count -gt 0) { $title = $lines[0].Trim() }
-        if ($lines.Count -gt 1) { $price = $lines[1].Trim() }
-        if ($lines.Count -gt 2) { $desc = $lines[2].Trim() }
+        $lines = Get-Content -Path $txtPath -Encoding UTF8
+        if ($lines.Count -gt 0) { $title = $lines[0] }
+        if ($lines.Count -gt 1) { $price = $lines[1] }
+        if ($lines.Count -gt 2) { $desc = $lines[2] }
     }
     
-    $item = @{
+    $items += @{
         img = "$folder/$($_.Name)"
         title = $title
         price = $price
         desc = $desc
     }
-    $items += $item
 }
 
-$items | ConvertTo-Json -Compress | Set-Content -Path "items.json" -Encoding UTF8
+# Преобразуем в JSON
+$json = $items | ConvertTo-Json -Compress
 
-Write-Host "Found $($items.Count) photos"
+# Читаем index.html
+$html = Get-Content -Path index.html -Raw
+
+# Заменяем массив data
+$pattern = 'const data = \[.*?\];'
+$newData = "const data = $json;"
+$newHtml = $html -replace $pattern, $newData, 1
+
+# Сохраняем
+$newHtml | Set-Content -Path index.html -Encoding UTF8
+
+Write-Host "✅ Updated! Found $($items.Count) items"
