@@ -1,36 +1,54 @@
 $folder = "tovar1"
 
-# Создаём txt для каждого jpg, если его нет
-Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
-    $txtPath = "$folder\$($_.BaseName).txt"
+# Получаем все изображения (.jpg/.jpeg в любом регистре)
+$images = Get-ChildItem -Path $folder -File | Where-Object {
+    $_.Extension.ToLower() -in @(".jpg", ".jpeg")
+} | Sort-Object Name
+
+# Создаём txt для каждого изображения, если его нет
+foreach ($img in $images) {
+    $txtPath = Join-Path $folder ($img.BaseName + ".txt")
+
     if (!(Test-Path $txtPath)) {
-        "Title`nPrice`nDescription" | Out-File -FilePath $txtPath -Encoding UTF8
+        @"
+Title
+Price
+Description
+"@ | Set-Content -Path $txtPath -Encoding UTF8
+
         Write-Host "Created: $txtPath"
     }
 }
 
-# Читаем фото и txt
+# Формируем список товаров
 $items = @()
-Get-ChildItem -Path $folder -Filter "*.jpg" | ForEach-Object {
-    $name = $_.BaseName
-    $txtPath = "$folder\$name.txt"
-    
-    $title = $name
+
+foreach ($img in $images) {
+
+    $txtPath = Join-Path $folder ($img.BaseName + ".txt")
+
+    $title = $img.BaseName
     $price = ""
     $desc = ""
-    
+
     if (Test-Path $txtPath) {
-        $lines = Get-Content -Path $txtPath -Encoding UTF8
-        if ($lines.Count -gt 0) { $title = $lines[0] }
-        if ($lines.Count -gt 1) { $price = $lines[1] }
-        if ($lines.Count -gt 2) { $desc = $lines[2] }
+
+        $lines = Get-Content $txtPath -Encoding UTF8
+
+        if ($lines.Count -ge 1) { $title = $lines[0] }
+        if ($lines.Count -ge 2) { $price = $lines[1] }
+
+        # Всё после первых двух строк становится описанием
+        if ($lines.Count -gt 2) {
+            $desc = ($lines | Select-Object -Skip 2) -join "<br>"
+        }
     }
-    
+
     $items += @{
-        img = "$folder/$($_.Name)"
+        img   = "$folder/$($img.Name)"
         title = $title
         price = $price
-        desc = $desc
+        desc  = $desc
     }
 }
 
@@ -43,9 +61,11 @@ $html = Get-Content -Path index.html -Raw
 # Заменяем массив data
 $pattern = 'const data = \[.*?\];'
 $newData = "const data = $json;"
-$newHtml = $html -replace $pattern, $newData
+
+$newHtml = [regex]::Replace($html, $pattern, $newData, "Singleline")
 
 # Сохраняем
 $newHtml | Set-Content -Path index.html -Encoding UTF8
 
-Write-Host "✅ Updated! Found $($items.Count) items"
+Write-Host ""
+Write-Host "✅ Updated! Found $($items.Count) image(s)."
