@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -6,7 +6,6 @@
     <title>Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
     <style>
-        /* весь стиль как был */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Inter', sans-serif; background: #0b1120; padding: 40px 20px; color: #e8edf5; }
         header { text-align: center; padding: 20px 0 40px; }
@@ -41,7 +40,7 @@
         <img id="modalImg" src="" />
     </div>
     <script>
-        fetch('items.json')
+        fetch('https://raw.githubusercontent.com/starsin13/baraholka/master/items.json')
             .then(res => res.json())
             .then(data => {
                 const gallery = document.getElementById('gallery');
