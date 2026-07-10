@@ -190,7 +190,6 @@
             color: #e8edf5;
         }
 
-        /* ===== КНОПКА "ЗАГРУЗИТЬ ЕЩЕ" ===== */
         .load-more-container {
             text-align: center;
             padding: 30px 0 10px;
@@ -272,7 +271,14 @@
             border-top: 1px solid #1e293b;
             margin-top: 40px;
         }
-        footer a { color: #94a3b8; text-decoration: none; }
+        footer a { 
+            color: #94a3b8; 
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        footer a:hover {
+            color: #60a5fa;
+        }
 
         #modal {
             display: none;
@@ -325,10 +331,8 @@
         <p>Покупайте и продавайте б/у вещи</p>
     </header>
 
-    <!-- Категории -->
     <div id="categoryTags" class="category-tags"></div>
 
-    <!-- Управление -->
     <div class="controls">
         <div class="search-box">
             <input type="text" id="searchInput" placeholder="🔍 Поиск..." />
@@ -347,13 +351,12 @@
 
     <main id="gallery" class="grid"></main>
 
-    <!-- Кнопка "Загрузить еще" -->
     <div class="load-more-container">
         <button class="load-more-btn" id="loadMoreBtn">📦 Загрузить еще</button>
     </div>
 
     <footer>
-        <p>📞 Связь: <a href="tel:+70000000000">+7 (913) 490-67-80</a></p>
+        <p>📞 Связь: <a href="tel:+79134906780">8 (913) 490-67-80</a></p>
     </footer>
 
     <div id="modal" onclick="this.style.display='none'">
@@ -369,7 +372,7 @@
         const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"Адаптер беспроводной D-Link DWA-140","price":"200р","desc":"Адаптер беспроводной D-Link DWA-140 USB2.0 802.11n, до 300Mbit/s","category":"Other"},{"img":"tovar1/3dwall01.jpg","id":"3dwall01","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall02.jpg","id":"3dwall02","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall03.jpg","id":"3dwall03","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall04.jpg","id":"3dwall04","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall05.jpg","id":"3dwall05","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall06.jpg","id":"3dwall06","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall07.JPG","id":"3dwall07","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall08.JPG","id":"3dwall08","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall09.JPG","id":"3dwall09","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall10.JPG","id":"3dwall10","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall11.JPG","id":"3dwall11","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall12.JPG","id":"3dwall12","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall13.JPG","id":"3dwall13","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall14.JPG","id":"3dwall14","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall15.JPG","id":"3dwall15","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall16.JPG","id":"3dwall16","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall17.JPG","id":"3dwall17","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall18.jpg","id":"3dwall18","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall19.jpg","id":"3dwall19","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall20.jpg","id":"3dwall20","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall21.jpg","id":"3dwall21","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall22.jpg","id":"3dwall22","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall23.jpg","id":"3dwall23","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall24.jpg","id":"3dwall24","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall25.jpg","id":"3dwall25","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall26.jpg","id":"3dwall26","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall27.jpg","id":"3dwall27","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall28.jpg","id":"3dwall28","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall29.jpg","id":"3dwall29","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall30.jpg","id":"3dwall30","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall31.jpg","id":"3dwall31","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall32.jpg","id":"3dwall32","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall33.jpg","id":"3dwall33","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall34.jpg","id":"3dwall34","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall35.jpg","id":"3dwall35","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall36.jpg","id":"3dwall36","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall37.jpg","id":"3dwall37","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall38.jpg","id":"3dwall38","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall39.jpg","id":"3dwall39","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall40.jpg","id":"3dwall40","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall41.jpg","id":"3dwall41","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall42.jpg","id":"3dwall42","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall43.jpg","id":"3dwall43","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall44.jpg","id":"3dwall44","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall45.jpg","id":"3dwall45","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall46.jpg","id":"3dwall46","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall47.jpg","id":"3dwall47","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall48.jpg","id":"3dwall48","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall49.jpg","id":"3dwall49","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall50.jpg","id":"3dwall50","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall51.jpg","id":"3dwall51","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall52.jpg","id":"3dwall52","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall53.jpg","id":"3dwall53","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall54.jpg","id":"3dwall54","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall55.JPG","id":"3dwall55","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall56.jpg","id":"3dwall56","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall57.jpg","id":"3dwall57","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall58.jpg","id":"3dwall58","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall59.jpg","id":"3dwall59","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall60.jpg","id":"3dwall60","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall62.jpg","id":"3dwall62","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall64.jpg","id":"3dwall64","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall65.jpg","id":"3dwall65","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall66.jpg","id":"3dwall66","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/7640.jpg","id":"7640","title":"No name","price":"100р","desc":"No description","category":"Электроника"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/image123.JPG","id":"image123","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"No name","price":"0","desc":"No description","category":"Other"}];
 
         // ============================================
-        // КАТЕГОРИИ И ФИЛЬТРЫ
+        // ЭЛЕМЕНТЫ
         // ============================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
@@ -382,14 +385,15 @@
         let currentSearch = '';
 
         // ============================================
-        // ПАГИНАЦИЯ (20 товаров за раз)
+        // ПАГИНАЦИЯ — ПРОСТАЯ И НАДЕЖНАЯ
         // ============================================
         const ITEMS_PER_PAGE = 20;
-        let currentPage = 1;
-        let allFilteredItems = [];
+        let allItems = [];          // Все товары после фильтрации
+        let currentPage = 0;        // Текущая страница (0, 1, 2...)
+        let totalPages = 0;         // Всего страниц
 
         // ============================================
-        // СЧЕТЧИК ПРОСМОТРОВ (localStorage)
+        // СЧЕТЧИК ПРОСМОТРОВ
         // ============================================
         const VIEWS_KEY = 'product_views';
 
@@ -411,35 +415,10 @@
             const views = getViews();
             views[productId] = (views[productId] || 0) + 1;
             saveViews(views);
-            updateViewsDisplay(productId, views[productId]);
-        }
-
-        function updateViewsDisplay(productId, count) {
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                const idElement = card.querySelector('.card-id');
-                if (idElement && idElement.textContent.includes(productId)) {
-                    let viewsElement = card.querySelector('.card-views');
-                    if (viewsElement) {
-                        viewsElement.textContent = `👁️ ${count} просмотров`;
-                    } else {
-                        const body = card.querySelector('.card-body');
-                        const viewsDiv = document.createElement('div');
-                        viewsDiv.className = 'card-views';
-                        viewsDiv.textContent = `👁️ ${count} просмотров`;
-                        const idDiv = body.querySelector('.card-id');
-                        if (idDiv) {
-                            body.insertBefore(viewsDiv, idDiv);
-                        } else {
-                            body.appendChild(viewsDiv);
-                        }
-                    }
-                }
-            });
         }
 
         // ============================================
-        // ФУНКЦИИ КАТЕГОРИЙ
+        // КАТЕГОРИИ
         // ============================================
         function getCategories() {
             const cats = new Set(data.map(item => item.category || 'Без категории'));
@@ -458,13 +437,12 @@
 
         function filterByCategory(category) {
             currentCategory = category;
-            currentPage = 1;
-            renderCategories();
+            currentPage = 0; // Сброс
             render();
         }
 
         // ============================================
-        // ФУНКЦИИ URL
+        // URL
         // ============================================
         function getItemIdFromURL() {
             const params = new URLSearchParams(window.location.search);
@@ -497,46 +475,10 @@
         }
 
         // ============================================
-        // ПАГИНАЦИЯ
+        // СОЗДАНИЕ КАРТОЧКИ
         // ============================================
-        function getCurrentPageItems() {
-            const start = 0;
-            const end = currentPage * ITEMS_PER_PAGE;
-            return allFilteredItems.slice(start, end);
-        }
-
-        function hasMoreItems() {
-            return currentPage * ITEMS_PER_PAGE < allFilteredItems.length;
-        }
-
-        function updateLoadMoreButton() {
-            if (!loadMoreBtn) return;
-
-            const isSingleItem = !!getItemIdFromURL();
-
-            if (hasMoreItems() && allFilteredItems.length > 0 && !isSingleItem) {
-                const remaining = allFilteredItems.length - currentPage * ITEMS_PER_PAGE;
-                loadMoreBtn.classList.remove('hidden');
-                loadMoreBtn.disabled = false;
-                loadMoreBtn.textContent = `📦 Загрузить еще (${remaining} осталось)`;
-            } else if (allFilteredItems.length > 0 && !isSingleItem) {
-                loadMoreBtn.classList.remove('hidden');
-                loadMoreBtn.disabled = true;
-                loadMoreBtn.textContent = '✅ Все товары загружены';
-            } else {
-                loadMoreBtn.classList.add('hidden');
-            }
-        }
-
-        function renderItems(items) {
-            const views = getViews();
-
-            if (items.length === 0) {
-                gallery.innerHTML = `<div class="no-results">😕 Ничего не найдено</div>`;
-                return;
-            }
-
-            gallery.innerHTML = items.map(item => `
+        function createCardHtml(item, views) {
+            return `
                 <div class="card" onclick="openItem('${item.id}')">
                     <img src="${item.img}" alt="${item.title}" loading="lazy" />
                     <div class="card-body">
@@ -551,46 +493,35 @@
                         </button>
                     </div>
                 </div>
-            `).join('');
-
-            // Обновляем просмотры после рендера
-            setTimeout(() => {
-                const currentViews = getViews();
-                Object.keys(currentViews).forEach(id => {
-                    updateViewsDisplay(id, currentViews[id]);
-                });
-            }, 50);
+            `;
         }
 
         // ============================================
-        // ОСНОВНОЙ РЕНДЕР
+        // ОСНОВНОЙ РЕНДЕР — ПРОСТОЙ И ПОНЯТНЫЙ
         // ============================================
         function render() {
             const id = getItemIdFromURL();
-            let filtered = data;
-
-            // Если выбран конкретный товар по ID
             if (id) {
-                filtered = data.filter(item => item.id === id);
-                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
-                if (filtered.length === 0) {
+                const item = data.find(i => i.id === id);
+                if (!item) {
                     gallery.innerHTML = `<div class="no-results">😕 Товар не найден</div>`;
                     loadMoreBtn.classList.add('hidden');
+                    backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
                     return;
                 }
-                renderItems(filtered);
+                const views = getViews();
+                gallery.innerHTML = createCardHtml(item, views);
                 loadMoreBtn.classList.add('hidden');
+                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
                 return;
             }
 
             backContainer.innerHTML = '';
+            let filtered = data;
 
-            // Фильтр по категории
-            if (currentCategory !== 'Все') {
+            if (currentCategory !== 'Все')
                 filtered = filtered.filter(item => (item.category || 'Без категории') === currentCategory);
-            }
 
-            // Поиск
             if (currentSearch) {
                 const search = currentSearch.toLowerCase();
                 filtered = filtered.filter(item =>
@@ -600,15 +531,45 @@
                 );
             }
 
-            // Сортировка
             filtered = sortItems(filtered, sortSelect.value);
+            allItems = filtered;
+            totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
 
-            // Сохраняем все отфильтрованные товары
-            allFilteredItems = filtered;
-            currentPage = 1;
+            const views = getViews();
+            gallery.innerHTML = "";
 
-            // Показываем первую страницу
-            renderItems(getCurrentPageItems());
+            const end = Math.min((currentPage + 1) * ITEMS_PER_PAGE, allItems.length);
+
+            for (let i = 0; i < end; i++) {
+                gallery.insertAdjacentHTML("beforeend", createCardHtml(allItems[i], views));
+            }
+
+            updateLoadMoreButton();
+        }
+
+        // ============================================
+        // КНОПКА "ЗАГРУЗИТЬ ЕЩЕ"
+        // ============================================
+        function updateLoadMoreButton() {
+            if (getItemIdFromURL() || allItems.length===0){loadMoreBtn.classList.add('hidden');return;}
+            if((currentPage+1)*ITEMS_PER_PAGE>=allItems.length){
+                loadMoreBtn.disabled=true;loadMoreBtn.classList.remove('hidden');loadMoreBtn.textContent='✅ Все товары загружены';
+            }else{
+                loadMoreBtn.disabled=false;loadMoreBtn.classList.remove('hidden');
+                const remaining=allItems.length-(currentPage+1)*ITEMS_PER_PAGE;
+                loadMoreBtn.textContent=`📦 Загрузить еще (${remaining} осталось)`;
+            }
+        }
+
+        function loadMore() {
+            if(currentPage+1>=totalPages)return;
+            currentPage++;
+            const views=getViews();
+            const start=currentPage*ITEMS_PER_PAGE;
+            const end=Math.min(start+ITEMS_PER_PAGE,allItems.length);
+            for(let i=start;i<end;i++){
+                gallery.insertAdjacentHTML('beforeend',createCardHtml(allItems[i],views));
+            }
             updateLoadMoreButton();
         }
 
@@ -623,27 +584,19 @@
 
         function goBack() {
             updateURL(null);
+            currentPage = 0;
             render();
         }
 
-        // Загрузить еще
+        // Кнопка "Загрузить еще"
         if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function() {
-                currentPage++;
-                renderItems(getCurrentPageItems());
-                updateLoadMoreButton();
-
-                const lastCard = document.querySelector('.card:last-child');
-                if (lastCard) {
-                    lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }
-            });
+            loadMoreBtn.addEventListener('click', loadMore);
         }
 
         // Поиск
         searchInput.addEventListener('input', (e) => {
             currentSearch = e.target.value;
-            currentPage = 1;
+            currentPage = 0;
             if (getItemIdFromURL()) {
                 updateURL(null);
             }
@@ -652,12 +605,13 @@
 
         // Сортировка
         sortSelect.addEventListener('change', () => {
-            currentPage = 1;
+            currentPage = 0;
             render();
         });
 
         // Кнопка "Назад" в браузере
         window.addEventListener('popstate', () => {
+            currentPage = 0;
             render();
         });
 
@@ -681,7 +635,7 @@
         }
 
         // ============================================
-        // МОДАЛЬНОЕ ОКНО ДЛЯ ФОТО
+        // МОДАЛЬНОЕ ОКНО
         // ============================================
         function openImage(src) {
             document.getElementById('modalImg').src = src;
