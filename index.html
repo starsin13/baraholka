@@ -89,6 +89,7 @@
             cursor: pointer;
             font-size: 0.9rem;
             transition: all 0.2s;
+            user-select: none;
         }
         .category-tag:hover {
             border-color: #60a5fa;
@@ -132,6 +133,7 @@
             border: 1px solid #334155;
             transition: transform 0.2s, border-color 0.2s;
             cursor: pointer;
+            animation: fadeIn 0.3s ease;
         }
         .card:hover { transform: translateY(-4px); border-color: #60a5fa; }
         .card img {
@@ -155,6 +157,11 @@
             border-radius: 20px;
         }
         .card-id { color: #64748b; font-size: 0.7rem; margin-top: 4px; }
+        .card-views {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
 
         .no-results {
             grid-column: 1 / -1;
@@ -181,6 +188,37 @@
         .share-btn:hover {
             background: #334155;
             color: #e8edf5;
+        }
+
+        /* ===== КНОПКА "ЗАГРУЗИТЬ ЕЩЕ" ===== */
+        .load-more-container {
+            text-align: center;
+            padding: 30px 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .load-more-btn {
+            padding: 12px 40px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+            border-color: #60a5fa;
+        }
+        .load-more-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .load-more-btn.hidden {
+            display: none;
         }
 
         .top-btn {
@@ -255,6 +293,11 @@
             border-radius: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (max-width:600px) {
             body { padding: 20px 12px; }
             h1 { font-size: 1.8rem; }
@@ -265,6 +308,7 @@
             .visitor-counter { bottom: 16px; right: 14px; font-size: 11px; padding: 6px 12px; }
             .controls { flex-direction: column; align-items: stretch; }
             .filter-group { justify-content: center; }
+            .load-more-btn { padding: 10px 24px; font-size: 0.9rem; width: 100%; }
         }
     </style>
 </head>
@@ -303,8 +347,13 @@
 
     <main id="gallery" class="grid"></main>
 
+    <!-- Кнопка "Загрузить еще" -->
+    <div class="load-more-container">
+        <button class="load-more-btn" id="loadMoreBtn">📦 Загрузить еще</button>
+    </div>
+
     <footer>
-        <p>📞 Связь: <a href="tel:+70000000000">+7 (000) 000-00-00</a></p>
+        <p>📞 Связь: <a href="tel:+70000000000">+7 (913) 490-67-80</a></p>
     </footer>
 
     <div id="modal" onclick="this.style.display='none'">
@@ -317,27 +366,86 @@
         // ============================================
         // ДАННЫЕ БУДУТ ВСТАВЛЕНЫ СКРИПТОМ
         // ============================================
-        const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"Адаптер беспроводной D-Link DWA-140","price":"200р","desc":"Адаптер беспроводной D-Link DWA-140 USB2.0 802.11n, до 300Mbit/s","category":"Other"},{"img":"tovar1/7640.jpg","id":"7640","title":"No name","price":"100р","desc":"No description","category":"Электроника"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/image123.JPG","id":"image123","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"No name","price":"0","desc":"No description","category":"Other"}];
+        const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"Адаптер беспроводной D-Link DWA-140","price":"200р","desc":"Адаптер беспроводной D-Link DWA-140 USB2.0 802.11n, до 300Mbit/s","category":"Other"},{"img":"tovar1/3dwall01.jpg","id":"3dwall01","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall02.jpg","id":"3dwall02","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall03.jpg","id":"3dwall03","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall04.jpg","id":"3dwall04","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall05.jpg","id":"3dwall05","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall06.jpg","id":"3dwall06","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall07.JPG","id":"3dwall07","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall08.JPG","id":"3dwall08","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall09.JPG","id":"3dwall09","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall10.JPG","id":"3dwall10","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall11.JPG","id":"3dwall11","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall12.JPG","id":"3dwall12","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall13.JPG","id":"3dwall13","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall14.JPG","id":"3dwall14","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall15.JPG","id":"3dwall15","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall16.JPG","id":"3dwall16","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall17.JPG","id":"3dwall17","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall18.jpg","id":"3dwall18","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall19.jpg","id":"3dwall19","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall20.jpg","id":"3dwall20","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall21.jpg","id":"3dwall21","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall22.jpg","id":"3dwall22","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall23.jpg","id":"3dwall23","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall24.jpg","id":"3dwall24","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall25.jpg","id":"3dwall25","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall26.jpg","id":"3dwall26","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall27.jpg","id":"3dwall27","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall28.jpg","id":"3dwall28","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall29.jpg","id":"3dwall29","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall30.jpg","id":"3dwall30","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall31.jpg","id":"3dwall31","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall32.jpg","id":"3dwall32","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall33.jpg","id":"3dwall33","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall34.jpg","id":"3dwall34","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall35.jpg","id":"3dwall35","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall36.jpg","id":"3dwall36","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall37.jpg","id":"3dwall37","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall38.jpg","id":"3dwall38","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall39.jpg","id":"3dwall39","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall40.jpg","id":"3dwall40","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall41.jpg","id":"3dwall41","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall42.jpg","id":"3dwall42","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall43.jpg","id":"3dwall43","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall44.jpg","id":"3dwall44","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall45.jpg","id":"3dwall45","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall46.jpg","id":"3dwall46","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall47.jpg","id":"3dwall47","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall48.jpg","id":"3dwall48","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall49.jpg","id":"3dwall49","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall50.jpg","id":"3dwall50","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall51.jpg","id":"3dwall51","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall52.jpg","id":"3dwall52","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall53.jpg","id":"3dwall53","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall54.jpg","id":"3dwall54","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall55.JPG","id":"3dwall55","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall56.jpg","id":"3dwall56","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall57.jpg","id":"3dwall57","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall58.jpg","id":"3dwall58","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall59.jpg","id":"3dwall59","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall60.jpg","id":"3dwall60","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall62.jpg","id":"3dwall62","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall64.jpg","id":"3dwall64","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall65.jpg","id":"3dwall65","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall66.jpg","id":"3dwall66","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/7640.jpg","id":"7640","title":"No name","price":"100р","desc":"No description","category":"Электроника"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/image123.JPG","id":"image123","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"No name","price":"0","desc":"No description","category":"Other"}];
 
         // ============================================
-        // КАТЕГОРИИ
+        // КАТЕГОРИИ И ФИЛЬТРЫ
         // ============================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
         const sortSelect = document.getElementById('sortSelect');
         const backContainer = document.getElementById('backButtonContainer');
         const categoryTags = document.getElementById('categoryTags');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
 
         let currentCategory = 'Все';
         let currentSearch = '';
 
-        // Получаем список всех категорий
+        // ============================================
+        // ПАГИНАЦИЯ (20 товаров за раз)
+        // ============================================
+        const ITEMS_PER_PAGE = 20;
+        let currentPage = 1;
+        let allFilteredItems = [];
+
+        // ============================================
+        // СЧЕТЧИК ПРОСМОТРОВ (localStorage)
+        // ============================================
+        const VIEWS_KEY = 'product_views';
+
+        function getViews() {
+            try {
+                const data = localStorage.getItem(VIEWS_KEY);
+                return data ? JSON.parse(data) : {};
+            } catch {
+                return {};
+            }
+        }
+
+        function saveViews(views) {
+            localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+        }
+
+        function incrementView(productId) {
+            if (!productId) return;
+            const views = getViews();
+            views[productId] = (views[productId] || 0) + 1;
+            saveViews(views);
+            updateViewsDisplay(productId, views[productId]);
+        }
+
+        function updateViewsDisplay(productId, count) {
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const idElement = card.querySelector('.card-id');
+                if (idElement && idElement.textContent.includes(productId)) {
+                    let viewsElement = card.querySelector('.card-views');
+                    if (viewsElement) {
+                        viewsElement.textContent = `👁️ ${count} просмотров`;
+                    } else {
+                        const body = card.querySelector('.card-body');
+                        const viewsDiv = document.createElement('div');
+                        viewsDiv.className = 'card-views';
+                        viewsDiv.textContent = `👁️ ${count} просмотров`;
+                        const idDiv = body.querySelector('.card-id');
+                        if (idDiv) {
+                            body.insertBefore(viewsDiv, idDiv);
+                        } else {
+                            body.appendChild(viewsDiv);
+                        }
+                    }
+                }
+            });
+        }
+
+        // ============================================
+        // ФУНКЦИИ КАТЕГОРИЙ
+        // ============================================
         function getCategories() {
             const cats = new Set(data.map(item => item.category || 'Без категории'));
             return ['Все', ...Array.from(cats).sort()];
         }
 
-        // Рендерим теги категорий
         function renderCategories() {
             const categories = getCategories();
             categoryTags.innerHTML = categories.map(cat => `
@@ -348,27 +456,30 @@
             `).join('');
         }
 
-        // Фильтр по категории
         function filterByCategory(category) {
             currentCategory = category;
+            currentPage = 1;
             renderCategories();
             render();
         }
 
-        // Получение ID из URL
+        // ============================================
+        // ФУНКЦИИ URL
+        // ============================================
         function getItemIdFromURL() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
 
-        // Обновление URL
         function updateURL(id) {
             const baseUrl = window.location.pathname;
             const newUrl = id ? `${baseUrl}?id=${id}` : baseUrl;
             window.history.pushState({}, '', newUrl);
         }
 
-        // Сортировка
+        // ============================================
+        // СОРТИРОВКА
+        // ============================================
         function sortItems(items, sortType) {
             const sorted = [...items];
             switch(sortType) {
@@ -385,7 +496,75 @@
             }
         }
 
-        // Основной рендер
+        // ============================================
+        // ПАГИНАЦИЯ
+        // ============================================
+        function getCurrentPageItems() {
+            const start = 0;
+            const end = currentPage * ITEMS_PER_PAGE;
+            return allFilteredItems.slice(start, end);
+        }
+
+        function hasMoreItems() {
+            return currentPage * ITEMS_PER_PAGE < allFilteredItems.length;
+        }
+
+        function updateLoadMoreButton() {
+            if (!loadMoreBtn) return;
+
+            const isSingleItem = !!getItemIdFromURL();
+
+            if (hasMoreItems() && allFilteredItems.length > 0 && !isSingleItem) {
+                const remaining = allFilteredItems.length - currentPage * ITEMS_PER_PAGE;
+                loadMoreBtn.classList.remove('hidden');
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = `📦 Загрузить еще (${remaining} осталось)`;
+            } else if (allFilteredItems.length > 0 && !isSingleItem) {
+                loadMoreBtn.classList.remove('hidden');
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.textContent = '✅ Все товары загружены';
+            } else {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+
+        function renderItems(items) {
+            const views = getViews();
+
+            if (items.length === 0) {
+                gallery.innerHTML = `<div class="no-results">😕 Ничего не найдено</div>`;
+                return;
+            }
+
+            gallery.innerHTML = items.map(item => `
+                <div class="card" onclick="openItem('${item.id}')">
+                    <img src="${item.img}" alt="${item.title}" loading="lazy" />
+                    <div class="card-body">
+                        <div class="card-title">${item.title}</div>
+                        ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
+                        ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
+                        ${item.category ? `<div class="card-category">📂 ${item.category}</div>` : ''}
+                        ${views[item.id] ? `<div class="card-views">👁️ ${views[item.id]} просмотров</div>` : ''}
+                        ${item.id ? `<div class="card-id">ID: ${item.id}</div>` : ''}
+                        <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}', '${item.id}')">
+                            📤 Поделиться
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Обновляем просмотры после рендера
+            setTimeout(() => {
+                const currentViews = getViews();
+                Object.keys(currentViews).forEach(id => {
+                    updateViewsDisplay(id, currentViews[id]);
+                });
+            }, 50);
+        }
+
+        // ============================================
+        // ОСНОВНОЙ РЕНДЕР
+        // ============================================
         function render() {
             const id = getItemIdFromURL();
             let filtered = data;
@@ -396,53 +575,48 @@
                 backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
                 if (filtered.length === 0) {
                     gallery.innerHTML = `<div class="no-results">😕 Товар не найден</div>`;
+                    loadMoreBtn.classList.add('hidden');
                     return;
                 }
-            } else {
-                backContainer.innerHTML = '';
-
-                // Фильтр по категории
-                if (currentCategory !== 'Все') {
-                    filtered = filtered.filter(item => (item.category || 'Без категории') === currentCategory);
-                }
-
-                // Поиск
-                if (currentSearch) {
-                    const search = currentSearch.toLowerCase();
-                    filtered = filtered.filter(item =>
-                        item.title.toLowerCase().includes(search) ||
-                        item.desc.toLowerCase().includes(search) ||
-                        item.id.toLowerCase().includes(search)
-                    );
-                }
-
-                // Сортировка
-                filtered = sortItems(filtered, sortSelect.value);
-            }
-
-            if (filtered.length === 0) {
-                gallery.innerHTML = `<div class="no-results">😕 Ничего не найдено</div>`;
+                renderItems(filtered);
+                loadMoreBtn.classList.add('hidden');
                 return;
             }
 
-            gallery.innerHTML = filtered.map(item => `
-                <div class="card" onclick="openItem('${item.id}')">
-                    <img src="${item.img}" alt="${item.title}" loading="lazy" />
-                    <div class="card-body">
-                        <div class="card-title">${item.title}</div>
-                        ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
-                        ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
-                        ${item.category ? `<div class="card-category">📂 ${item.category}</div>` : ''}
-                        ${item.id ? `<div class="card-id">ID: ${item.id}</div>` : ''}
-                        <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}', '${item.id}')">
-                            📤 Поделиться
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+            backContainer.innerHTML = '';
+
+            // Фильтр по категории
+            if (currentCategory !== 'Все') {
+                filtered = filtered.filter(item => (item.category || 'Без категории') === currentCategory);
+            }
+
+            // Поиск
+            if (currentSearch) {
+                const search = currentSearch.toLowerCase();
+                filtered = filtered.filter(item =>
+                    item.title.toLowerCase().includes(search) ||
+                    item.desc.toLowerCase().includes(search) ||
+                    item.id.toLowerCase().includes(search)
+                );
+            }
+
+            // Сортировка
+            filtered = sortItems(filtered, sortSelect.value);
+
+            // Сохраняем все отфильтрованные товары
+            allFilteredItems = filtered;
+            currentPage = 1;
+
+            // Показываем первую страницу
+            renderItems(getCurrentPageItems());
+            updateLoadMoreButton();
         }
 
+        // ============================================
+        // ОБРАБОТЧИКИ
+        // ============================================
         function openItem(id) {
+            incrementView(id);
             updateURL(id);
             render();
         }
@@ -452,16 +626,33 @@
             render();
         }
 
-        // Обработчики событий
+        // Загрузить еще
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                currentPage++;
+                renderItems(getCurrentPageItems());
+                updateLoadMoreButton();
+
+                const lastCard = document.querySelector('.card:last-child');
+                if (lastCard) {
+                    lastCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        }
+
+        // Поиск
         searchInput.addEventListener('input', (e) => {
             currentSearch = e.target.value;
+            currentPage = 1;
             if (getItemIdFromURL()) {
                 updateURL(null);
             }
             render();
         });
 
+        // Сортировка
         sortSelect.addEventListener('change', () => {
+            currentPage = 1;
             render();
         });
 
@@ -470,17 +661,9 @@
             render();
         });
 
-        // Инициализация
-        renderCategories();
-        render();
-
-        // Открытие фото в модалке
-        function openImage(src) {
-            document.getElementById('modalImg').src = src;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        // Поделиться
+        // ============================================
+        // ПОДЕЛИТЬСЯ
+        // ============================================
         function shareItem(title, img, id) {
             const baseUrl = window.location.href.split('?')[0];
             const itemUrl = `${baseUrl}?id=${id}`;
@@ -497,7 +680,17 @@
             }
         }
 
-        // Кнопка "Наверх"
+        // ============================================
+        // МОДАЛЬНОЕ ОКНО ДЛЯ ФОТО
+        // ============================================
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // ============================================
+        // КНОПКА "НАВЕРХ"
+        // ============================================
         const topBtn = document.getElementById('topBtn');
         window.addEventListener('scroll', () => {
             topBtn.classList.toggle('visible', window.scrollY > 300);
@@ -505,6 +698,12 @@
         topBtn.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        renderCategories();
+        render();
     </script>
 
 </body>
