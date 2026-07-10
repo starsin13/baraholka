@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Маркетплейс</title>
+    <title>Gallery</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -18,20 +18,9 @@
         h1 { font-size: 2.4rem; font-weight: 500; }
         header p { color: #94a3b8; font-size: 1rem; margin-top: 4px; }
 
-        .controls {
-            max-width: 1200px;
-            margin: 0 auto 25px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-            justify-content: center;
-        }
-
         .search-box {
-            flex: 1;
-            min-width: 180px;
-            max-width: 350px;
+            max-width: 400px;
+            margin: 0 auto 30px;
             display: flex;
             gap: 10px;
         }
@@ -49,60 +38,9 @@
         .search-box input:focus { border-color: #60a5fa; }
         .search-box input::placeholder { color: #64748b; }
 
-        .filter-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .filter-group select {
-            padding: 10px 16px;
-            border-radius: 30px;
-            border: 1px solid #334155;
-            background: #1e293b;
-            color: #e8edf5;
-            font-size: 0.95rem;
-            outline: none;
-            cursor: pointer;
-            transition: border 0.2s;
-            min-width: 150px;
-        }
-        .filter-group select:focus { border-color: #60a5fa; }
-        .filter-group select option { background: #1e293b; }
-
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-            padding: 0 10px;
-            margin-bottom: 20px;
-        }
-
-        .category-tag {
-            padding: 6px 18px;
-            border-radius: 30px;
-            border: 1px solid #334155;
-            background: #1e293b;
-            color: #94a3b8;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s;
-        }
-        .category-tag:hover {
-            border-color: #60a5fa;
-            color: #e8edf5;
-        }
-        .category-tag.active {
-            background: #60a5fa;
-            color: #0b1120;
-            border-color: #60a5fa;
-            font-weight: 500;
-        }
-
         .back-btn {
             display: inline-block;
+            margin: 10px auto 20px;
             padding: 8px 20px;
             background: #1e293b;
             color: #94a3b8;
@@ -145,16 +83,7 @@
         .card-title { font-weight: 500; font-size: 1rem; }
         .card-price { color: #60a5fa; font-weight: 600; font-size: 0.95rem; margin-top: 2px; }
         .card-desc { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
-        .card-category { 
-            color: #64748b; 
-            font-size: 0.75rem; 
-            margin-top: 6px;
-            display: inline-block;
-            background: #0f172a;
-            padding: 2px 10px;
-            border-radius: 20px;
-        }
-        .card-id { color: #64748b; font-size: 0.7rem; margin-top: 4px; }
+        .card-id { color: #64748b; font-size: 0.7rem; margin-top: 8px; }
 
         .no-results {
             grid-column: 1 / -1;
@@ -263,8 +192,6 @@
             .search-box { max-width: 100%; }
             .top-btn { bottom: 70px; right: 14px; width: 44px; height: 44px; font-size: 20px; }
             .visitor-counter { bottom: 16px; right: 14px; font-size: 11px; padding: 6px 12px; }
-            .controls { flex-direction: column; align-items: stretch; }
-            .filter-group { justify-content: center; }
         }
     </style>
 </head>
@@ -277,26 +204,13 @@
     <button class="top-btn" id="topBtn" title="Наверх">↑</button>
 
     <header>
-        <h1>🛒 Маркетплейс</h1>
-        <p>Покупайте и продавайте б/у вещи</p>
+        <h1>Gallery</h1>
+        <p>Photos from tovar1 folder</p>
     </header>
 
-    <!-- Категории -->
-    <div id="categoryTags" class="category-tags"></div>
-
-    <!-- Управление -->
-    <div class="controls">
+    <div id="controls" style="text-align:center;">
         <div class="search-box">
-            <input type="text" id="searchInput" placeholder="🔍 Поиск..." />
-        </div>
-        <div class="filter-group">
-            <select id="sortSelect">
-                <option value="default">📌 По умолчанию</option>
-                <option value="price-asc">💰 Цена: по возрастанию</option>
-                <option value="price-desc">💰 Цена: по убыванию</option>
-                <option value="title-asc">📝 По названию (А-Я)</option>
-                <option value="title-desc">📝 По названию (Я-А)</option>
-            </select>
+            <input type="text" id="searchInput" placeholder="🔍 Search by name..." />
         </div>
         <div id="backButtonContainer"></div>
     </div>
@@ -304,7 +218,7 @@
     <main id="gallery" class="grid"></main>
 
     <footer>
-        <p>📞 Связь: <a href="tel:+70000000000">+7 (000) 000-00-00</a></p>
+        <p>Contact: <a href="tel:+70000000000">+7 (000) 000-00-00</a></p>
     </footer>
 
     <div id="modal" onclick="this.style.display='none'">
@@ -314,114 +228,47 @@
     <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
     <script>
-        // ============================================
-        // ДАННЫЕ БУДУТ ВСТАВЛЕНЫ СКРИПТОМ
-        // ============================================
-        const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"Адаптер беспроводной D-Link DWA-140","price":"200р","desc":"Адаптер беспроводной D-Link DWA-140 USB2.0 802.11n, до 300Mbit/s","category":"Other"},{"img":"tovar1/7640.jpg","id":"7640","title":"No name","price":"100р","desc":"No description","category":"Электроника"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/image123.JPG","id":"image123","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"No name","price":"0","desc":"No description","category":"Other"}];
+        const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"USB приемник вайфай","price":"100р","desc":"Приемник DLINK, 300 мегабит"},{"img":"tovar1/7640.jpg","id":"7640","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/image123.JPG","id":"image123","title":"Product name","price":"Price","desc":"Description"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"Product name","price":"Price","desc":"Description"}];
 
-        // ============================================
-        // КАТЕГОРИИ
-        // ============================================
         const gallery = document.getElementById('gallery');
         const searchInput = document.getElementById('searchInput');
-        const sortSelect = document.getElementById('sortSelect');
         const backContainer = document.getElementById('backButtonContainer');
-        const categoryTags = document.getElementById('categoryTags');
 
-        let currentCategory = 'Все';
-        let currentSearch = '';
-
-        // Получаем список всех категорий
-        function getCategories() {
-            const cats = new Set(data.map(item => item.category || 'Без категории'));
-            return ['Все', ...Array.from(cats).sort()];
-        }
-
-        // Рендерим теги категорий
-        function renderCategories() {
-            const categories = getCategories();
-            categoryTags.innerHTML = categories.map(cat => `
-                <span class="category-tag ${cat === currentCategory ? 'active' : ''}" 
-                      onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')">
-                    ${cat}
-                </span>
-            `).join('');
-        }
-
-        // Фильтр по категории
-        function filterByCategory(category) {
-            currentCategory = category;
-            renderCategories();
-            render();
-        }
-
-        // Получение ID из URL
         function getItemIdFromURL() {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
 
-        // Обновление URL
         function updateURL(id) {
             const baseUrl = window.location.pathname;
             const newUrl = id ? `${baseUrl}?id=${id}` : baseUrl;
             window.history.pushState({}, '', newUrl);
         }
 
-        // Сортировка
-        function sortItems(items, sortType) {
-            const sorted = [...items];
-            switch(sortType) {
-                case 'price-asc':
-                    return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-                case 'price-desc':
-                    return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-                case 'title-asc':
-                    return sorted.sort((a, b) => a.title.localeCompare(b.title));
-                case 'title-desc':
-                    return sorted.sort((a, b) => b.title.localeCompare(a.title));
-                default:
-                    return sorted;
-            }
-        }
-
-        // Основной рендер
-        function render() {
+        function render(filter = '') {
             const id = getItemIdFromURL();
             let filtered = data;
 
-            // Если выбран конкретный товар по ID
             if (id) {
                 filtered = data.filter(item => item.id === id);
-                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
+                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Back to all</button>`;
                 if (filtered.length === 0) {
-                    gallery.innerHTML = `<div class="no-results">😕 Товар не найден</div>`;
+                    gallery.innerHTML = `<div class="no-results">😕 Item not found</div>`;
                     return;
                 }
             } else {
                 backContainer.innerHTML = '';
-
-                // Фильтр по категории
-                if (currentCategory !== 'Все') {
-                    filtered = filtered.filter(item => (item.category || 'Без категории') === currentCategory);
-                }
-
-                // Поиск
-                if (currentSearch) {
-                    const search = currentSearch.toLowerCase();
-                    filtered = filtered.filter(item =>
-                        item.title.toLowerCase().includes(search) ||
-                        item.desc.toLowerCase().includes(search) ||
-                        item.id.toLowerCase().includes(search)
+                if (filter) {
+                    filtered = data.filter(item =>
+                        item.title.toLowerCase().includes(filter.toLowerCase()) ||
+                        item.desc.toLowerCase().includes(filter.toLowerCase()) ||
+                        item.id.toLowerCase().includes(filter.toLowerCase())
                     );
                 }
-
-                // Сортировка
-                filtered = sortItems(filtered, sortSelect.value);
             }
 
             if (filtered.length === 0) {
-                gallery.innerHTML = `<div class="no-results">😕 Ничего не найдено</div>`;
+                gallery.innerHTML = `<div class="no-results">😕 No results found</div>`;
                 return;
             }
 
@@ -432,10 +279,9 @@
                         <div class="card-title">${item.title}</div>
                         ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
                         ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
-                        ${item.category ? `<div class="card-category">📂 ${item.category}</div>` : ''}
                         ${item.id ? `<div class="card-id">ID: ${item.id}</div>` : ''}
                         <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}', '${item.id}')">
-                            📤 Поделиться
+                            📤 Share
                         </button>
                     </div>
                 </div>
@@ -452,52 +298,41 @@
             render();
         }
 
-        // Обработчики событий
         searchInput.addEventListener('input', (e) => {
-            currentSearch = e.target.value;
             if (getItemIdFromURL()) {
                 updateURL(null);
             }
-            render();
+            render(e.target.value);
         });
 
-        sortSelect.addEventListener('change', () => {
-            render();
-        });
-
-        // Кнопка "Назад" в браузере
+        // Обработчик кнопки "Назад" в браузере
         window.addEventListener('popstate', () => {
             render();
         });
 
-        // Инициализация
-        renderCategories();
         render();
 
-        // Открытие фото в модалке
         function openImage(src) {
             document.getElementById('modalImg').src = src;
             document.getElementById('modal').style.display = 'flex';
         }
 
-        // Поделиться
         function shareItem(title, img, id) {
             const baseUrl = window.location.href.split('?')[0];
             const itemUrl = `${baseUrl}?id=${id}`;
-            const text = `📦 ${title} - ${itemUrl}`;
+            const text = `Check this: ${title} - ${itemUrl}`;
 
             if (navigator.share) {
                 navigator.share({ title, text, url: itemUrl });
             } else {
                 navigator.clipboard?.writeText(`${title} - ${itemUrl}`).then(() => {
-                    alert('Ссылка скопирована!');
+                    alert('Link copied to clipboard!');
                 }).catch(() => {
-                    prompt('Скопируйте ссылку:', `${title} - ${itemUrl}`);
+                    prompt('Copy this link:', `${title} - ${itemUrl}`);
                 });
             }
         }
 
-        // Кнопка "Наверх"
         const topBtn = document.getElementById('topBtn');
         window.addEventListener('scroll', () => {
             topBtn.classList.toggle('visible', window.scrollY > 300);

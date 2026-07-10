@@ -1,4 +1,5 @@
-﻿image123
-Product name
-Price
-Description
+﻿ID: image123
+Title: 
+Price: 
+Description: 
+Category: 

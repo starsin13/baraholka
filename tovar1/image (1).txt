@@ -1,4 +1,5 @@
-﻿image (1)
-Product name
-Price
-Description
+﻿ID: image (1)
+Title: 
+Price: 
+Description: 
+Category: 

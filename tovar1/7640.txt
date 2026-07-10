@@ -1,4 +1,5 @@
-﻿7640
-Product name
-Price
-Description
+﻿ID: 7640
+Title: 
+100р
+Description: 
+Электроника

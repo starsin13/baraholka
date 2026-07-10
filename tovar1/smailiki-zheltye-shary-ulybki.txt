@@ -1,4 +1,5 @@
-﻿smailiki-zheltye-shary-ulybki
-Product name
-Price
-Description
+﻿ID: smailiki-zheltye-shary-ulybki
+Title: 
+Price: 
+Description: 
+Category: 
