@@ -4,81 +4,793 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Маркетплейс</title>
-    <!-- ... ваш существующий head ... -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
     <style>
-    /* ... ваш существующий CSS ... */
-    
-    /* ДОБАВИТЬ ЭТО В КОНЕЦ CSS */
-    .modal-nav {
-        position: fixed;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 1001;
-        background: rgba(30, 41, 59, 0.8);
-        color: #e8edf5;
-        border: 1px solid #334155;
-        border-radius: 50%;
-        width: 48px;
-        height: 48px;
-        font-size: 24px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        backdrop-filter: blur(4px);
-    }
-    .modal-nav:hover {
-        background: rgba(96, 165, 250, 0.3);
-        border-color: #60a5fa;
-    }
-    .modal-nav.prev {
-        left: 20px;
-    }
-    .modal-nav.next {
-        right: 20px;
-    }
-    .modal-nav.hidden {
-        display: none;
-    }
-    
-    @media (max-width: 600px) {
-        .modal-nav {
-            width: 40px;
-            height: 40px;
-            font-size: 18px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b1120;
+            padding: 40px 20px;
+            color: #e8edf5;
+            min-height: 100vh;
         }
-        .modal-nav.prev { left: 10px; }
-        .modal-nav.next { right: 10px; }
-    }
+        header { text-align: center; padding: 20px 0 30px; }
+        h1 { font-size: 2.4rem; font-weight: 500; }
+        header p { color: #94a3b8; font-size: 1rem; margin-top: 4px; }
+
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 30px 0;
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        .loading-indicator.active {
+            display: block;
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #1e293b;
+            border-top: 3px solid #60a5fa;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            max-width: 350px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e8edf5;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .search-box input:focus { border-color: #60a5fa; }
+        .search-box input::placeholder { color: #64748b; }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group select {
+            padding: 10px 16px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e8edf5;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            transition: border 0.2s;
+            min-width: 150px;
+        }
+        .filter-group select:focus { border-color: #60a5fa; }
+        .filter-group select option { background: #1e293b; }
+
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 0 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-tag {
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .category-tag:hover {
+            border-color: #60a5fa;
+            color: #e8edf5;
+        }
+        .category-tag.active {
+            background: #60a5fa;
+            color: #0b1120;
+            border-color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+            animation: fadeIn 0.3s ease;
+        }
+        .card:hover { transform: translateY(-4px); border-color: #60a5fa; }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            background: #0f172a;
+            cursor: pointer;
+        }
+        .card-body { padding: 12px 16px 16px; }
+        .card-title { font-weight: 500; font-size: 1rem; }
+        .card-price { color: #60a5fa; font-weight: 600; font-size: 0.95rem; margin-top: 2px; }
+        .card-desc { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
+        .card-category { 
+            color: #64748b; 
+            font-size: 0.75rem; 
+            margin-top: 6px;
+            display: inline-block;
+            background: #0f172a;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .card-id { color: #64748b; font-size: 0.7rem; margin-top: 4px; }
+        .card-views {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #94a3b8;
+            padding: 40px 0;
+        }
+
+        .share-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            text-decoration: none;
+        }
+        .share-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+        }
+
+        .load-more-container {
+            text-align: center;
+            padding: 30px 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .load-more-btn {
+            padding: 12px 40px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+            border-color: #60a5fa;
+        }
+        .load-more-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .load-more-btn.hidden {
+            display: none;
+        }
+
+        .top-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .top-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+            border-color: #60a5fa;
+        }
+
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            border: 1px solid #334155;
+            z-index: 999;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 10px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 40px;
+        }
+        footer a { 
+            color: #94a3b8; 
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        footer a:hover {
+            color: #60a5fa;
+        }
+
+        /* ===== МОДАЛЬНОЕ ОКНО С НАВИГАЦИЕЙ ===== */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(11,17,32,0.95);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        #modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 12px;
+            cursor: default;
+            user-select: none;
+        }
+
+        .modal-nav {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1001;
+            background: rgba(30, 41, 59, 0.8);
+            color: #e8edf5;
+            border: 1px solid #334155;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 28px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+            user-select: none;
+        }
+        .modal-nav:hover {
+            background: rgba(96, 165, 250, 0.3);
+            border-color: #60a5fa;
+            transform: translateY(-50%) scale(1.05);
+        }
+        .modal-nav.prev {
+            left: 20px;
+        }
+        .modal-nav.next {
+            right: 20px;
+        }
+        .modal-nav.hidden {
+            display: none;
+        }
+
+        .modal-close {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            z-index: 1001;
+            background: rgba(30, 41, 59, 0.8);
+            color: #e8edf5;
+            border: 1px solid #334155;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(4px);
+        }
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+            transform: scale(1.05);
+        }
+
+        @media (max-width:600px) {
+            body { padding: 20px 12px; }
+            h1 { font-size: 1.8rem; }
+            .grid { gap: 14px; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); }
+            .card img { height: 150px; }
+            .search-box { max-width: 100%; }
+            .top-btn { bottom: 70px; right: 14px; width: 44px; height: 44px; font-size: 20px; }
+            .visitor-counter { bottom: 16px; right: 14px; font-size: 11px; padding: 6px 12px; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .filter-group { justify-content: center; }
+            .load-more-btn { padding: 10px 24px; font-size: 0.9rem; width: 100%; }
+            .modal-nav { width: 40px; height: 40px; font-size: 20px; }
+            .modal-nav.prev { left: 8px; }
+            .modal-nav.next { right: 8px; }
+            .modal-close { top: 12px; right: 16px; width: 36px; height: 36px; font-size: 18px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
-    <!-- ... ваш существующий HTML ... -->
 
-    <!-- МОДАЛЬНОЕ ОКНО С НАВИГАЦИЕЙ -->
-    <div id="modal" style="display:none;">
+    <div class="visitor-counter">
+        👁 Views: <span id="busuanzi_value_page_pv">0</span>
+    </div>
+
+    <button class="top-btn" id="topBtn" title="Наверх">↑</button>
+
+    <header>
+        <h1>🛒 Маркетплейс</h1>
+        <p>Покупайте и продавайте б/у вещи</p>
+    </header>
+
+    <div id="categoryTags" class="category-tags"></div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск..." />
+        </div>
+        <div class="filter-group">
+            <select id="sortSelect">
+                <option value="default">📌 По умолчанию</option>
+                <option value="price-asc">💰 Цена: по возрастанию</option>
+                <option value="price-desc">💰 Цена: по убыванию</option>
+                <option value="title-asc">📝 По названию (А-Я)</option>
+                <option value="title-desc">📝 По названию (Я-А)</option>
+            </select>
+        </div>
+        <div id="backButtonContainer"></div>
+    </div>
+
+    <div class="loading-indicator" id="loadingIndicator">
+        <span class="loading-spinner"></span>
+        <span>Загрузка...</span>
+    </div>
+
+    <main id="gallery" class="grid"></main>
+
+    <div class="load-more-container">
+        <button class="load-more-btn" id="loadMoreBtn">📦 Загрузить еще</button>
+    </div>
+
+    <footer>
+        <p>📞 Связь: <a href="tel:+79134906780">8 (913) 490-67-80</a></p>
+    </footer>
+
+    <!-- ===== МОДАЛЬНОЕ ОКНО ===== -->
+    <div id="modal">
+        <button class="modal-close" id="modalClose">✕</button>
         <button class="modal-nav prev" id="modalPrev">‹</button>
-        <img id="modalImg" src="" onclick="event.stopPropagation();" />
+        <img id="modalImg" src="" />
         <button class="modal-nav next" id="modalNext">›</button>
     </div>
 
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
     <script>
     // ============================================
-    // ВАШ СУЩЕСТВУЮЩИЙ КОД ДО МОДАЛЬНОГО ОКНА
+    // ДАННЫЕ
     // ============================================
+    const data = [{"img":"tovar1/hdd1.jpg","id":"hdd1","title":"Hard Disk Drive ВД Грин 1.5 Тб","price":"700р","desc":"Состояние плохое, для пытливых, часть отрезать можно","category":"Electronics"},{"img":"tovar1/hdd10.jpg","id":"hdd10","title":"Hard Disk Drive ВД 80гигов","price":"500р","desc":"Все ок","category":"Electronics"},{"img":"tovar1/hdd11.jpg","id":"hdd11","title":"Hard Disk Drive Хитачи 250гигов","price":"1200р","desc":"Нормальный","category":"Electronics"},{"img":"tovar1/hdd12.jpg","id":"hdd12","title":"Hard Disk Drive Вд блю","price":"1000р","desc":"Нормальный","category":"Electronics"},{"img":"tovar1/hdd13.jpg","id":"hdd13","title":"Hard Disk Drive Хитачи 250гб","price":"1200р","desc":"Нормальный","category":"Electronics"},{"img":"tovar1/hdd14.jpg","id":"hdd14","title":"Hard Disk Drive Вд грин 1.5тб","price":"750","desc":"С косяками, может быть можно место откусить.","category":"Electronics"},{"img":"tovar1/hdd15.jpg","id":"hdd15","title":"Hard Disk Drive 160 гигов сеагейт","price":"400р","desc":"Диск рабочий, сломана фишка подключения сата. Можно на клей посадить.","category":"Electronics"},{"img":"tovar1/hdd16.jpg","id":"hdd16","title":"Hard Disk Drive Самсунг на 160гб","price":"800р","desc":"Старенький диск","category":"Electronics"},{"img":"tovar1/hdd17.jpg","id":"hdd17","title":"Hard Disk Drive Сеагейт на 1.5 тб","price":"700р","desc":"Нестабильные секторы, может можно часть откусить","category":"Electronics"},{"img":"tovar1/hdd18.jpg","id":"hdd18","title":"Hard Disk Drive Макстор 200Гб","price":"300р","desc":"Рабочий, но капризный.","category":"Electronics"},{"img":"tovar1/hdd2.jpg","id":"hdd2","title":"Hard Disk Drive ВД 250г","price":"1000р","desc":"Рабочий","category":"Electronics"},{"img":"tovar1/hdd3.jpg","id":"hdd3","title":"Hard Disk Drive Вд блю 500гб","price":"1500р","desc":"Рабочий","category":"Electronics"},{"img":"tovar1/hdd4.jpg","id":"hdd4","title":"Hard Disk Drive 1.5 Сеагейт","price":"4000р","desc":"Рабочий","category":"Electronics"},{"img":"tovar1/hdd5.jpg","id":"hdd5","title":"Hard Disk Drive 160 самсунг","price":"800р","desc":"1 нестабильный сектор","category":"Electronics"},{"img":"tovar1/hdd6.jpg","id":"hdd6","title":"Hard Disk Drive сеагейт 500гб","price":"2000р","desc":"рабочий","category":"Electronics"},{"img":"tovar1/hdd7.jpg","id":"hdd7","title":"Hard Disk Drive Вд 750гб","price":"2500р","desc":"Рабочий","category":"Electronics"},{"img":"tovar1/hdd8.jpg","id":"hdd8","title":"Hard Disk Drive 750 гигов Сегейт","price":"2250р","desc":"Рабочий","category":"Electronics"},{"img":"tovar1/hdd9.jpg","id":"hdd9","title":"Hard Disk Drive Хитачи 250гигов","price":"1200р","desc":"Рабочий","category":"Electronics"}];
 
     // ============================================
-    // МОДАЛЬНОЕ ОКНО С НАВИГАЦИЕЙ
+    // УТИЛИТЫ
+    // ============================================
+    function escapeHTML(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    const VIEWS_KEY = 'product_views';
+    
+    function getViews() {
+        try {
+            const stored = localStorage.getItem(VIEWS_KEY);
+            return stored ? JSON.parse(stored) : {};
+        } catch {
+            return {};
+        }
+    }
+
+    function saveViews(views) {
+        localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+    }
+
+    function incrementView(productId) {
+        if (!productId) return;
+        const views = getViews();
+        views[productId] = (views[productId] || 0) + 1;
+        saveViews(views);
+    }
+
+    // ============================================
+    // СОСТОЯНИЕ
+    // ============================================
+    const state = {
+        category: 'Все',
+        search: '',
+        sort: 'default',
+        page: 0,
+        itemsPerPage: 20,
+        selectedId: null,
+        allItems: [],
+        totalPages: 0
+    };
+
+    // ============================================
+    // ЧИСТЫЕ ФУНКЦИИ
+    // ============================================
+    function getCategories(items) {
+        const cats = new Set(items.map(item => item.category || 'Без категории'));
+        return ['Все', ...Array.from(cats).sort()];
+    }
+
+    function filterItems(items, category, search) {
+        let filtered = [...items];
+        
+        if (category && category !== 'Все') {
+            filtered = filtered.filter(item => 
+                (item.category || 'Без категории') === category
+            );
+        }
+        
+        if (search && search.trim()) {
+            const query = search.toLowerCase().trim();
+            filtered = filtered.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                (item.desc && item.desc.toLowerCase().includes(query)) ||
+                item.id.toLowerCase().includes(query)
+            );
+        }
+        
+        return filtered;
+    }
+
+    function sortItems(items, sortType) {
+        const sorted = [...items];
+        switch(sortType) {
+            case 'price-asc':
+                return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+            case 'price-desc':
+                return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            case 'title-asc':
+                return sorted.sort((a, b) => a.title.localeCompare(b.title));
+            case 'title-desc':
+                return sorted.sort((a, b) => b.title.localeCompare(a.title));
+            default:
+                return sorted;
+        }
+    }
+
+    function getPagedItems(items, page, itemsPerPage) {
+        const start = page * itemsPerPage;
+        const end = start + itemsPerPage;
+        return items.slice(start, end);
+    }
+
+    // ============================================
+    // РЕНДЕР
+    // ============================================
+    function createCardHtml(item, views) {
+        return `
+            <div class="card">
+                <img src="${escapeHTML(item.img)}" alt="${escapeHTML(item.title)}" loading="lazy" onclick="event.stopPropagation(); openImage('${escapeHTML(item.img)}')" />
+                <div class="card-body" onclick="openItem('${escapeHTML(item.id)}')">
+                    <div class="card-title">${escapeHTML(item.title)}</div>
+                    ${item.price ? `<div class="card-price">${escapeHTML(item.price)}</div>` : ''}
+                    ${item.desc ? `<div class="card-desc">${escapeHTML(item.desc)}</div>` : ''}
+                    ${item.category ? `<div class="card-category">📂 ${escapeHTML(item.category)}</div>` : ''}
+                    ${views[item.id] ? `<div class="card-views">👁️ ${views[item.id]} просмотров</div>` : ''}
+                    ${item.id ? `<div class="card-id">ID: ${escapeHTML(item.id)}</div>` : ''}
+                    <button class="share-btn" onclick="event.stopPropagation(); shareItem('${escapeHTML(item.title)}', '${escapeHTML(item.img)}', '${escapeHTML(item.id)}')">
+                        📤 Поделиться
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderItems(items) {
+        const gallery = document.getElementById('gallery');
+        
+        if (!items || items.length === 0) {
+            gallery.innerHTML = `<div class="no-results">😕 Товаров не найдено</div>`;
+            return;
+        }
+
+        const views = getViews();
+        let html = '';
+        for (const item of items) {
+            html += createCardHtml(item, views);
+        }
+        gallery.innerHTML = html;
+    }
+
+    // ============================================
+    // УПРАВЛЕНИЕ
+    // ============================================
+    function updateURL(id) {
+        const baseUrl = window.location.pathname;
+        const newUrl = id ? `${baseUrl}?id=${id}` : baseUrl;
+        window.history.pushState({}, '', newUrl);
+    }
+
+    function getItemIdFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+
+    function renderCategories() {
+        if (!data || data.length === 0) return;
+        const categories = getCategories(data);
+        const container = document.getElementById('categoryTags');
+        container.innerHTML = categories.map(cat => `
+            <span class="category-tag ${cat === state.category ? 'active' : ''}" 
+                  onclick="setCategory('${cat.replace(/'/g, "\\'")}')">
+                ${cat}
+            </span>
+        `).join('');
+    }
+
+    function setCategory(category) {
+        state.category = category;
+        state.page = 0;
+        state.selectedId = null;
+        updateURL(null);
+        render();
+    }
+
+    function updateLoadMoreButton() {
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        
+        if (state.selectedId || state.allItems.length === 0) {
+            loadMoreBtn.classList.add('hidden');
+            return;
+        }
+        
+        const loadedCount = (state.page + 1) * state.itemsPerPage;
+        if (loadedCount >= state.allItems.length) {
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.classList.remove('hidden');
+            loadMoreBtn.textContent = '✅ Все товары загружены';
+        } else {
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.classList.remove('hidden');
+            const remaining = state.allItems.length - loadedCount;
+            loadMoreBtn.textContent = `📦 Загрузить еще (${remaining} осталось)`;
+        }
+    }
+
+    function render() {
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        loadingIndicator.classList.add('active');
+        
+        setTimeout(() => {
+            try {
+                if (!data || data.length === 0) {
+                    document.getElementById('gallery').innerHTML = 
+                        '<div class="no-results">⚠️ Нет данных. Запустите скрипт генерации.</div>';
+                    document.getElementById('loadMoreBtn').classList.add('hidden');
+                    loadingIndicator.classList.remove('active');
+                    return;
+                }
+
+                const id = getItemIdFromURL();
+                if (id) {
+                    state.selectedId = id;
+                    renderSingleItem(id);
+                } else {
+                    state.selectedId = null;
+                    renderList();
+                }
+            } catch (error) {
+                console.error('Render error:', error);
+                document.getElementById('gallery').innerHTML = 
+                    '<div class="no-results">❌ Ошибка загрузки данных</div>';
+            } finally {
+                loadingIndicator.classList.remove('active');
+            }
+        }, 100);
+    }
+
+    function renderSingleItem(id) {
+        const item = data.find(i => i.id === id);
+        const gallery = document.getElementById('gallery');
+        const backContainer = document.getElementById('backButtonContainer');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+        
+        if (!item) {
+            gallery.innerHTML = `<div class="no-results">😕 Товар не найден</div>`;
+            backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
+            loadMoreBtn.classList.add('hidden');
+            return;
+        }
+        
+        renderItems([item]);
+        backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
+        loadMoreBtn.classList.add('hidden');
+    }
+
+    function renderList() {
+        const backContainer = document.getElementById('backButtonContainer');
+        backContainer.innerHTML = '';
+        
+        let filtered = filterItems(data, state.category, state.search);
+        filtered = sortItems(filtered, state.sort);
+        
+        state.allItems = filtered;
+        state.totalPages = Math.ceil(filtered.length / state.itemsPerPage);
+        
+        const pagedItems = getPagedItems(filtered, state.page, state.itemsPerPage);
+        renderItems(pagedItems);
+        updateLoadMoreButton();
+    }
+
+    // ============================================
+    // НАВИГАЦИЯ
+    // ============================================
+    function openItem(id) {
+        incrementView(id);
+        updateURL(id);
+        state.selectedId = id;
+        render();
+    }
+
+    function goBack() {
+        updateURL(null);
+        state.selectedId = null;
+        state.page = 0;
+        render();
+    }
+
+    function loadMore() {
+        if (state.page + 1 >= state.totalPages) return;
+        state.page++;
+        
+        const pagedItems = getPagedItems(state.allItems, state.page, state.itemsPerPage);
+        const views = getViews();
+        
+        const gallery = document.getElementById('gallery');
+        for (const item of pagedItems) {
+            gallery.insertAdjacentHTML('beforeend', createCardHtml(item, views));
+        }
+        
+        updateLoadMoreButton();
+    }
+
+    // ============================================
+    // ПОДЕЛИТЬСЯ
+    // ============================================
+    function shareItem(title, img, id) {
+        const baseUrl = window.location.href.split('?')[0];
+        const itemUrl = `${baseUrl}?id=${id}`;
+        const text = `📦 ${title} - ${itemUrl}`;
+
+        if (navigator.share) {
+            navigator.share({ title, text, url: itemUrl });
+        } else {
+            navigator.clipboard?.writeText(`${title} - ${itemUrl}`).then(() => {
+                alert('Ссылка скопирована!');
+            }).catch(() => {
+                prompt('Скопируйте ссылку:', `${title} - ${itemUrl}`);
+            });
+        }
+    }
+
+    // ============================================
+    // МОДАЛЬНОЕ ОКНО - РАБОТАЕТ!
     // ============================================
     let currentImageIndex = 0;
     let currentImageList = [];
 
     function getImageList() {
-        // Собираем все изображения из текущего отображения
         const images = [];
         document.querySelectorAll('.card img').forEach(img => {
-            images.push(img.getAttribute('src'));
+            const src = img.getAttribute('src');
+            if (src) images.push(src);
         });
         return images;
     }
@@ -89,29 +801,26 @@
         const modalPrev = document.getElementById('modalPrev');
         const modalNext = document.getElementById('modalNext');
         
-        // Получаем список всех видимых изображений
         currentImageList = getImageList();
         currentImageIndex = currentImageList.indexOf(src);
         
         if (currentImageIndex === -1) {
-            // Если изображение не найдено в списке, показываем только его
             modalImg.src = src;
             modalPrev.classList.add('hidden');
             modalNext.classList.add('hidden');
         } else {
             modalImg.src = src;
-            // Показываем/скрываем кнопки навигации
             modalPrev.classList.toggle('hidden', currentImageIndex === 0);
             modalNext.classList.toggle('hidden', currentImageIndex === currentImageList.length - 1);
         }
         
         modal.style.display = 'flex';
-        document.body.style.overflow = 'hidden'; // Блокируем скролл
+        document.body.style.overflow = 'hidden';
     }
 
     function closeModal() {
         document.getElementById('modal').style.display = 'none';
-        document.body.style.overflow = ''; // Возвращаем скролл
+        document.body.style.overflow = '';
     }
 
     function navigateModal(direction) {
@@ -126,26 +835,28 @@
         const modalNext = document.getElementById('modalNext');
         
         modalImg.src = currentImageList[currentImageIndex];
-        
-        // Обновляем видимость кнопок
         modalPrev.classList.toggle('hidden', currentImageIndex === 0);
         modalNext.classList.toggle('hidden', currentImageIndex === currentImageList.length - 1);
     }
 
-    // Обработчики для модального окна
+    // Обработчики модального окна
     document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById('modal');
+        const modalClose = document.getElementById('modalClose');
         const modalPrev = document.getElementById('modalPrev');
         const modalNext = document.getElementById('modalNext');
         
-        // Закрытие по клику на фон
+        modalClose.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeModal();
+        });
+        
         modal.addEventListener('click', function(e) {
             if (e.target === this) {
                 closeModal();
             }
         });
         
-        // Кнопки навигации
         modalPrev.addEventListener('click', function(e) {
             e.stopPropagation();
             navigateModal(-1);
@@ -156,31 +867,81 @@
             navigateModal(1);
         });
         
-        // Закрытие по ESC
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 closeModal();
             }
             if (e.key === 'ArrowLeft' && document.getElementById('modal').style.display === 'flex') {
+                e.preventDefault();
                 navigateModal(-1);
             }
             if (e.key === 'ArrowRight' && document.getElementById('modal').style.display === 'flex') {
+                e.preventDefault();
                 navigateModal(1);
             }
         });
     });
 
-    // Переопределяем функцию renderItems, чтобы обновлять список изображений
-    const originalRenderItems = renderItems;
-    renderItems = function(items) {
-        originalRenderItems(items);
-        // Обновляем список изображений для модального окна
-        currentImageList = getImageList();
-    };
+    // ============================================
+    // КНОПКА "НАВЕРХ"
+    // ============================================
+    const topBtn = document.getElementById('topBtn');
+    window.addEventListener('scroll', () => {
+        topBtn.classList.toggle('visible', window.scrollY > 300);
+    });
+    topBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 
     // ============================================
-    // ОСТАЛЬНОЙ КОД
+    // ОБРАБОТЧИКИ СОБЫТИЙ
     // ============================================
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        state.search = e.target.value;
+        state.page = 0;
+        state.selectedId = null;
+        updateURL(null);
+        render();
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', (e) => {
+        state.sort = e.target.value;
+        state.page = 0;
+        render();
+    });
+
+    document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
+
+    window.addEventListener('popstate', () => {
+        state.page = 0;
+        render();
+    });
+
+    // ============================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ============================================
+    (function init() {
+        const id = getItemIdFromURL();
+        if (id) {
+            state.selectedId = id;
+        }
+        
+        const params = new URLSearchParams(window.location.search);
+        const searchParam = params.get('search');
+        if (searchParam) {
+            state.search = searchParam;
+            document.getElementById('searchInput').value = searchParam;
+        }
+        
+        const categoryParam = params.get('category');
+        if (categoryParam) {
+            state.category = categoryParam;
+        }
+        
+        renderCategories();
+        render();
+    })();
     </script>
+
 </body>
 </html>
