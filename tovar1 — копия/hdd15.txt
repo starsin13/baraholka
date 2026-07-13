@@ -1,5 +1,0 @@
-﻿ID: hdd15
-Hard Disk Drive
-Price:
-Description:
-Electronics

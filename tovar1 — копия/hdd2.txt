@@ -1,5 +1,0 @@
-﻿ID: hdd2
-Hard Disk Drive
-Price:
-Description:
-Electronics
