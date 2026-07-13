@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Маркетплейс</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b1120;
+            padding: 40px 20px;
+            color: #e8edf5;
+            min-height: 100vh;
+        }
+        header { text-align: center; padding: 20px 0 30px; }
+        h1 { font-size: 2.4rem; font-weight: 500; }
+        header p { color: #94a3b8; font-size: 1rem; margin-top: 4px; }
+
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto 25px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            max-width: 350px;
+            display: flex;
+            gap: 10px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e8edf5;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .search-box input:focus { border-color: #60a5fa; }
+        .search-box input::placeholder { color: #64748b; }
+
+        .filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-group select {
+            padding: 10px 16px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #e8edf5;
+            font-size: 0.95rem;
+            outline: none;
+            cursor: pointer;
+            transition: border 0.2s;
+            min-width: 150px;
+        }
+        .filter-group select:focus { border-color: #60a5fa; }
+        .filter-group select option { background: #1e293b; }
+
+        .category-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            padding: 0 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-tag {
+            padding: 6px 18px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .category-tag:hover {
+            border-color: #60a5fa;
+            color: #e8edf5;
+        }
+        .category-tag.active {
+            background: #60a5fa;
+            color: #0b1120;
+            border-color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 24px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .card {
+            background: #1e293b;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #334155;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+            animation: fadeIn 0.3s ease;
+        }
+        .card:hover { transform: translateY(-4px); border-color: #60a5fa; }
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            background: #0f172a;
+        }
+        .card-body { padding: 12px 16px 16px; }
+        .card-title { font-weight: 500; font-size: 1rem; }
+        .card-price { color: #60a5fa; font-weight: 600; font-size: 0.95rem; margin-top: 2px; }
+        .card-desc { color: #94a3b8; font-size: 0.85rem; margin-top: 4px; }
+        .card-category { 
+            color: #64748b; 
+            font-size: 0.75rem; 
+            margin-top: 6px;
+            display: inline-block;
+            background: #0f172a;
+            padding: 2px 10px;
+            border-radius: 20px;
+        }
+        .card-id { color: #64748b; font-size: 0.7rem; margin-top: 4px; }
+        .card-views {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            color: #94a3b8;
+            padding: 40px 0;
+        }
+
+        .share-btn {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 8px;
+            text-decoration: none;
+        }
+        .share-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+        }
+
+        .load-more-container {
+            text-align: center;
+            padding: 30px 0 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .load-more-btn {
+            padding: 12px 40px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+            background: #1e293b;
+            color: #94a3b8;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+            border-color: #60a5fa;
+        }
+        .load-more-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .load-more-btn.hidden {
+            display: none;
+        }
+
+        .top-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .top-btn:hover {
+            background: #334155;
+            color: #e8edf5;
+            border-color: #60a5fa;
+        }
+
+        .visitor-counter {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: #94a3b8;
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            border: 1px solid #334155;
+            z-index: 999;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0 10px;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #1e293b;
+            margin-top: 40px;
+        }
+        footer a { 
+            color: #94a3b8; 
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        footer a:hover {
+            color: #60a5fa;
+        }
+
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(11,17,32,0.92);
+            backdrop-filter: blur(8px);
+            cursor: pointer;
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        #modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width:600px) {
+            body { padding: 20px 12px; }
+            h1 { font-size: 1.8rem; }
+            .grid { gap: 14px; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); }
+            .card img { height: 150px; }
+            .search-box { max-width: 100%; }
+            .top-btn { bottom: 70px; right: 14px; width: 44px; height: 44px; font-size: 20px; }
+            .visitor-counter { bottom: 16px; right: 14px; font-size: 11px; padding: 6px 12px; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .filter-group { justify-content: center; }
+            .load-more-btn { padding: 10px 24px; font-size: 0.9rem; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="visitor-counter">
+        👁 Views: <span id="busuanzi_value_page_pv">0</span>
+    </div>
+
+    <button class="top-btn" id="topBtn" title="Наверх">↑</button>
+
+    <header>
+        <h1>🛒 Маркетплейс</h1>
+        <p>Покупайте и продавайте б/у вещи</p>
+    </header>
+
+    <div id="categoryTags" class="category-tags"></div>
+
+    <div class="controls">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск..." />
+        </div>
+        <div class="filter-group">
+            <select id="sortSelect">
+                <option value="default">📌 По умолчанию</option>
+                <option value="price-asc">💰 Цена: по возрастанию</option>
+                <option value="price-desc">💰 Цена: по убыванию</option>
+                <option value="title-asc">📝 По названию (А-Я)</option>
+                <option value="title-desc">📝 По названию (Я-А)</option>
+            </select>
+        </div>
+        <div id="backButtonContainer"></div>
+    </div>
+
+    <main id="gallery" class="grid"></main>
+
+    <div class="load-more-container">
+        <button class="load-more-btn" id="loadMoreBtn">📦 Загрузить еще</button>
+    </div>
+
+    <footer>
+        <p>📞 Связь: <a href="tel:+79134906780">8 (913) 490-67-80</a></p>
+    </footer>
+
+    <div id="modal" onclick="this.style.display='none'">
+        <img id="modalImg" src="" />
+    </div>
+
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <script>
+        // ============================================
+        // ДАННЫЕ БУДУТ ВСТАВЛЕНЫ СКРИПТОМ
+        // ============================================
+        const data = [{"img":"tovar1/12345.jpg","id":"12345","title":"Адаптер беспроводной D-Link DWA-140","price":"200р","desc":"Адаптер беспроводной D-Link DWA-140 USB2.0 802.11n, до 300Mbit/s","category":"Other"},{"img":"tovar1/3dwall01.jpg","id":"3dwall01","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall02.jpg","id":"3dwall02","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall03.jpg","id":"3dwall03","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall04.jpg","id":"3dwall04","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall05.jpg","id":"3dwall05","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall06.jpg","id":"3dwall06","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall07.JPG","id":"3dwall07","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall08.JPG","id":"3dwall08","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall09.JPG","id":"3dwall09","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall10.JPG","id":"3dwall10","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall11.JPG","id":"3dwall11","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall12.JPG","id":"3dwall12","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall13.JPG","id":"3dwall13","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall14.JPG","id":"3dwall14","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall15.JPG","id":"3dwall15","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall16.JPG","id":"3dwall16","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall17.JPG","id":"3dwall17","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall18.jpg","id":"3dwall18","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall19.jpg","id":"3dwall19","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall20.jpg","id":"3dwall20","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall21.jpg","id":"3dwall21","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall22.jpg","id":"3dwall22","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall23.jpg","id":"3dwall23","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall24.jpg","id":"3dwall24","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall25.jpg","id":"3dwall25","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall26.jpg","id":"3dwall26","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall27.jpg","id":"3dwall27","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall28.jpg","id":"3dwall28","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall29.jpg","id":"3dwall29","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall30.jpg","id":"3dwall30","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall31.jpg","id":"3dwall31","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall32.jpg","id":"3dwall32","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall33.jpg","id":"3dwall33","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall34.jpg","id":"3dwall34","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall35.jpg","id":"3dwall35","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall36.jpg","id":"3dwall36","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall37.jpg","id":"3dwall37","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall38.jpg","id":"3dwall38","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall39.jpg","id":"3dwall39","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall40.jpg","id":"3dwall40","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall41.jpg","id":"3dwall41","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall42.jpg","id":"3dwall42","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall43.jpg","id":"3dwall43","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall44.jpg","id":"3dwall44","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall45.jpg","id":"3dwall45","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall46.jpg","id":"3dwall46","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall47.jpg","id":"3dwall47","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall48.jpg","id":"3dwall48","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall49.jpg","id":"3dwall49","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall50.jpg","id":"3dwall50","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall51.jpg","id":"3dwall51","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall52.jpg","id":"3dwall52","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall53.jpg","id":"3dwall53","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall54.jpg","id":"3dwall54","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall55.JPG","id":"3dwall55","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall56.jpg","id":"3dwall56","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall57.jpg","id":"3dwall57","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall58.jpg","id":"3dwall58","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall59.jpg","id":"3dwall59","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall60.jpg","id":"3dwall60","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall62.jpg","id":"3dwall62","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall64.jpg","id":"3dwall64","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall65.jpg","id":"3dwall65","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/3dwall66.jpg","id":"3dwall66","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/7640.jpg","id":"7640","title":"No name","price":"100р","desc":"No description","category":"Электроника"},{"img":"tovar1/image (1).jpg","id":"image (1)","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/image123.JPG","id":"image123","title":"No name","price":"0","desc":"No description","category":"Other"},{"img":"tovar1/smailiki-zheltye-shary-ulybki.jpg","id":"smailiki-zheltye-shary-ulybki","title":"No name","price":"0","desc":"No description","category":"Other"}];
+
+        // ============================================
+        // ЭЛЕМЕНТЫ
+        // ============================================
+        const gallery = document.getElementById('gallery');
+        const searchInput = document.getElementById('searchInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const backContainer = document.getElementById('backButtonContainer');
+        const categoryTags = document.getElementById('categoryTags');
+        const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+        let currentCategory = 'Все';
+        let currentSearch = '';
+
+        // ============================================
+        // ПАГИНАЦИЯ — ПРОСТАЯ И НАДЕЖНАЯ
+        // ============================================
+        const ITEMS_PER_PAGE = 20;
+        let allItems = [];          // Все товары после фильтрации
+        let currentPage = 0;        // Текущая страница (0, 1, 2...)
+        let totalPages = 0;         // Всего страниц
+
+        // ============================================
+        // СЧЕТЧИК ПРОСМОТРОВ
+        // ============================================
+        const VIEWS_KEY = 'product_views';
+
+        function getViews() {
+            try {
+                const data = localStorage.getItem(VIEWS_KEY);
+                return data ? JSON.parse(data) : {};
+            } catch {
+                return {};
+            }
+        }
+
+        function saveViews(views) {
+            localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+        }
+
+        function incrementView(productId) {
+            if (!productId) return;
+            const views = getViews();
+            views[productId] = (views[productId] || 0) + 1;
+            saveViews(views);
+        }
+
+        // ============================================
+        // КАТЕГОРИИ
+        // ============================================
+        function getCategories() {
+            const cats = new Set(data.map(item => item.category || 'Без категории'));
+            return ['Все', ...Array.from(cats).sort()];
+        }
+
+        function renderCategories() {
+            const categories = getCategories();
+            categoryTags.innerHTML = categories.map(cat => `
+                <span class="category-tag ${cat === currentCategory ? 'active' : ''}" 
+                      onclick="filterByCategory('${cat.replace(/'/g, "\\'")}')">
+                    ${cat}
+                </span>
+            `).join('');
+        }
+
+        function filterByCategory(category) {
+            currentCategory = category;
+            currentPage = 0; // Сброс
+            render();
+        }
+
+        // ============================================
+        // URL
+        // ============================================
+        function getItemIdFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get('id');
+        }
+
+        function updateURL(id) {
+            const baseUrl = window.location.pathname;
+            const newUrl = id ? `${baseUrl}?id=${id}` : baseUrl;
+            window.history.pushState({}, '', newUrl);
+        }
+
+        // ============================================
+        // СОРТИРОВКА
+        // ============================================
+        function sortItems(items, sortType) {
+            const sorted = [...items];
+            switch(sortType) {
+                case 'price-asc':
+                    return sorted.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
+                case 'price-desc':
+                    return sorted.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                case 'title-asc':
+                    return sorted.sort((a, b) => a.title.localeCompare(b.title));
+                case 'title-desc':
+                    return sorted.sort((a, b) => b.title.localeCompare(a.title));
+                default:
+                    return sorted;
+            }
+        }
+
+        // ============================================
+        // СОЗДАНИЕ КАРТОЧКИ
+        // ============================================
+        function createCardHtml(item, views) {
+            return `
+                <div class="card" onclick="openItem('${item.id}')">
+                    <img src="${item.img}" alt="${item.title}" loading="lazy" />
+                    <div class="card-body">
+                        <div class="card-title">${item.title}</div>
+                        ${item.price ? `<div class="card-price">${item.price}</div>` : ''}
+                        ${item.desc ? `<div class="card-desc">${item.desc}</div>` : ''}
+                        ${item.category ? `<div class="card-category">📂 ${item.category}</div>` : ''}
+                        ${views[item.id] ? `<div class="card-views">👁️ ${views[item.id]} просмотров</div>` : ''}
+                        ${item.id ? `<div class="card-id">ID: ${item.id}</div>` : ''}
+                        <button class="share-btn" onclick="event.stopPropagation(); shareItem('${item.title}', '${item.img}', '${item.id}')">
+                            📤 Поделиться
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ============================================
+        // ОСНОВНОЙ РЕНДЕР — ПРОСТОЙ И ПОНЯТНЫЙ
+        // ============================================
+        function render() {
+            const id = getItemIdFromURL();
+            if (id) {
+                const item = data.find(i => i.id === id);
+                if (!item) {
+                    gallery.innerHTML = `<div class="no-results">😕 Товар не найден</div>`;
+                    loadMoreBtn.classList.add('hidden');
+                    backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
+                    return;
+                }
+                const views = getViews();
+                gallery.innerHTML = createCardHtml(item, views);
+                loadMoreBtn.classList.add('hidden');
+                backContainer.innerHTML = `<button class="back-btn" onclick="goBack()">⬅ Назад ко всем</button>`;
+                return;
+            }
+
+            backContainer.innerHTML = '';
+            let filtered = data;
+
+            if (currentCategory !== 'Все')
+                filtered = filtered.filter(item => (item.category || 'Без категории') === currentCategory);
+
+            if (currentSearch) {
+                const search = currentSearch.toLowerCase();
+                filtered = filtered.filter(item =>
+                    item.title.toLowerCase().includes(search) ||
+                    item.desc.toLowerCase().includes(search) ||
+                    item.id.toLowerCase().includes(search)
+                );
+            }
+
+            filtered = sortItems(filtered, sortSelect.value);
+            allItems = filtered;
+            totalPages = Math.ceil(allItems.length / ITEMS_PER_PAGE);
+
+            const views = getViews();
+            gallery.innerHTML = "";
+
+            const end = Math.min((currentPage + 1) * ITEMS_PER_PAGE, allItems.length);
+
+            for (let i = 0; i < end; i++) {
+                gallery.insertAdjacentHTML("beforeend", createCardHtml(allItems[i], views));
+            }
+
+            updateLoadMoreButton();
+        }
+
+        // ============================================
+        // КНОПКА "ЗАГРУЗИТЬ ЕЩЕ"
+        // ============================================
+        function updateLoadMoreButton() {
+            if (getItemIdFromURL() || allItems.length===0){loadMoreBtn.classList.add('hidden');return;}
+            if((currentPage+1)*ITEMS_PER_PAGE>=allItems.length){
+                loadMoreBtn.disabled=true;loadMoreBtn.classList.remove('hidden');loadMoreBtn.textContent='✅ Все товары загружены';
+            }else{
+                loadMoreBtn.disabled=false;loadMoreBtn.classList.remove('hidden');
+                const remaining=allItems.length-(currentPage+1)*ITEMS_PER_PAGE;
+                loadMoreBtn.textContent=`📦 Загрузить еще (${remaining} осталось)`;
+            }
+        }
+
+        function loadMore() {
+            if(currentPage+1>=totalPages)return;
+            currentPage++;
+            const views=getViews();
+            const start=currentPage*ITEMS_PER_PAGE;
+            const end=Math.min(start+ITEMS_PER_PAGE,allItems.length);
+            for(let i=start;i<end;i++){
+                gallery.insertAdjacentHTML('beforeend',createCardHtml(allItems[i],views));
+            }
+            updateLoadMoreButton();
+        }
+
+        // ============================================
+        // ОБРАБОТЧИКИ
+        // ============================================
+        function openItem(id) {
+            incrementView(id);
+            updateURL(id);
+            render();
+        }
+
+        function goBack() {
+            updateURL(null);
+            currentPage = 0;
+            render();
+        }
+
+        // Кнопка "Загрузить еще"
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', loadMore);
+        }
+
+        // Поиск
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            currentPage = 0;
+            if (getItemIdFromURL()) {
+                updateURL(null);
+            }
+            render();
+        });
+
+        // Сортировка
+        sortSelect.addEventListener('change', () => {
+            currentPage = 0;
+            render();
+        });
+
+        // Кнопка "Назад" в браузере
+        window.addEventListener('popstate', () => {
+            currentPage = 0;
+            render();
+        });
+
+        // ============================================
+        // ПОДЕЛИТЬСЯ
+        // ============================================
+        function shareItem(title, img, id) {
+            const baseUrl = window.location.href.split('?')[0];
+            const itemUrl = `${baseUrl}?id=${id}`;
+            const text = `📦 ${title} - ${itemUrl}`;
+
+            if (navigator.share) {
+                navigator.share({ title, text, url: itemUrl });
+            } else {
+                navigator.clipboard?.writeText(`${title} - ${itemUrl}`).then(() => {
+                    alert('Ссылка скопирована!');
+                }).catch(() => {
+                    prompt('Скопируйте ссылку:', `${title} - ${itemUrl}`);
+                });
+            }
+        }
+
+        // ============================================
+        // МОДАЛЬНОЕ ОКНО
+        // ============================================
+        function openImage(src) {
+            document.getElementById('modalImg').src = src;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        // ============================================
+        // КНОПКА "НАВЕРХ"
+        // ============================================
+        const topBtn = document.getElementById('topBtn');
+        window.addEventListener('scroll', () => {
+            topBtn.classList.toggle('visible', window.scrollY > 300);
+        });
+        topBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ============================================
+        // ИНИЦИАЛИЗАЦИЯ
+        // ============================================
+        renderCategories();
+        render();
+    </script>
+
+</body>
+</html>
