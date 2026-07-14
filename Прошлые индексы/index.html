@@ -14,81 +14,8 @@
             color: #e8edf5;
             min-height: 100vh;
         }
-        header { 
-            text-align: center; 
-            padding: 20px 0 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        /* ===== НОВЫЙ ЛОГОТИП ===== */
-        .logo-strip {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin-bottom: 12px;
-            background: #1e293b;
-            padding: 8px 24px;
-            border-radius: 60px;
-            border: 1px solid #334155;
-            min-height: 52px;
-        }
-        .logo-strip svg {
-            display: block;
-            flex-shrink: 0;
-        }
-        .logo-strip .logo-divider {
-            width: 1px;
-            height: 30px;
-            background: #334155;
-            flex-shrink: 0;
-        }
-        .logo-strip .logo-text {
-            font-size: 1.6rem;
-            font-weight: 500;
-            color: #e8edf5;
-            letter-spacing: 0.5px;
-            margin-left: 4px;
-        }
-        .logo-strip .logo-sub {
-            font-size: 0.7rem;
-            color: #64748b;
-            margin-left: 6px;
-            font-weight: 400;
-            letter-spacing: 0.3px;
-        }
-        
-        .logo-strip .pc-icon {
-            transition: transform 0.2s;
-        }
-        .logo-strip:hover .pc-icon {
-            transform: translateY(-2px);
-        }
-        .logo-strip .pc-icon.gpu { animation: floatGpu 3s ease-in-out infinite; }
-        .logo-strip .pc-icon.hdd { animation: floatHdd 3.2s ease-in-out infinite 0.3s; }
-        .logo-strip .pc-icon.psu { animation: floatPsu 2.8s ease-in-out infinite 0.6s; }
-        .logo-strip .pc-icon.case { animation: floatCase 3.5s ease-in-out infinite 0.9s; }
-        
-        @keyframes floatGpu {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-4px); }
-        }
-        @keyframes floatHdd {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-        @keyframes floatPsu {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-        @keyframes floatCase {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-
+        header { text-align: center; padding: 20px 0 30px; }
+        h1 { font-size: 2.4rem; font-weight: 500; }
         header p { color: #94a3b8; font-size: 1rem; margin-top: 4px; }
 
         .loading-indicator {
@@ -464,11 +391,7 @@
 
         @media (max-width:600px) {
             body { padding: 20px 12px; }
-            .logo-strip { padding: 6px 14px; gap: 4px; min-height: 42px; }
-            .logo-strip .logo-text { font-size: 1.2rem; }
-            .logo-strip .logo-sub { font-size: 0.6rem; }
-            .logo-strip svg { transform: scale(0.7); }
-            .logo-strip .logo-divider { height: 22px; }
+            h1 { font-size: 1.8rem; }
             .grid { gap: 14px; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); }
             .card img { height: 150px; }
             .search-box { max-width: 100%; }
@@ -498,68 +421,7 @@
     <button class="top-btn" id="topBtn" title="Наверх">↑</button>
 
     <header>
-        <!-- ===== ЛОГОТИП ВМЕСТО ТЕЛЕЖКИ ===== -->
-        <div class="logo-strip">
-            <!-- Видеокарта -->
-            <svg class="pc-icon gpu" width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="8" width="28" height="12" rx="2" stroke="#60a5fa" stroke-width="1.5"/>
-                <rect x="4" y="10" width="10" height="8" rx="1" stroke="#60a5fa" stroke-width="1.2"/>
-                <rect x="16" y="10" width="8" height="8" rx="1" stroke="#60a5fa" stroke-width="1.2"/>
-                <line x1="2" y1="8" x2="2" y2="14" stroke="#60a5fa" stroke-width="1.5"/>
-                <line x1="30" y1="8" x2="30" y2="14" stroke="#60a5fa" stroke-width="1.5"/>
-                <circle cx="27" cy="12" r="2" stroke="#60a5fa" stroke-width="1.2"/>
-                <circle cx="7" cy="12" r="1.5" stroke="#60a5fa" stroke-width="1"/>
-                <rect x="20" y="20" width="4" height="3" rx="0.5" fill="#60a5fa" opacity="0.4"/>
-                <rect x="2" y="22" width="8" height="2" rx="0.5" fill="#60a5fa" opacity="0.3"/>
-                <text x="4" y="6" font-size="5" fill="#60a5fa" opacity="0.6">GPU</text>
-            </svg>
-
-            <div class="logo-divider"></div>
-
-            <!-- Жесткий диск -->
-            <svg class="pc-icon hdd" width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="8" width="28" height="14" rx="2" stroke="#60a5fa" stroke-width="1.5"/>
-                <rect x="5" y="12" width="20" height="6" rx="1" stroke="#60a5fa" stroke-width="1.2"/>
-                <circle cx="28" cy="15" r="2.5" stroke="#60a5fa" stroke-width="1.2"/>
-                <circle cx="28" cy="15" r="1.2" fill="#60a5fa" opacity="0.4"/>
-                <text x="6" y="10" font-size="4.5" fill="#60a5fa" opacity="0.6">HDD</text>
-                <line x1="5" y1="20" x2="12" y2="20" stroke="#60a5fa" stroke-width="1" opacity="0.4"/>
-                <line x1="14" y1="20" x2="20" y2="20" stroke="#60a5fa" stroke-width="1" opacity="0.4"/>
-            </svg>
-
-            <div class="logo-divider"></div>
-
-            <!-- Блок питания -->
-            <svg class="pc-icon psu" width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="8" width="26" height="14" rx="2" stroke="#60a5fa" stroke-width="1.5"/>
-                <rect x="6" y="10" width="18" height="10" rx="1" stroke="#60a5fa" stroke-width="1.2"/>
-                <text x="8" y="17" font-size="5" fill="#60a5fa" opacity="0.6">PSU</text>
-                <circle cx="27" cy="12" r="2" stroke="#60a5fa" stroke-width="1.2"/>
-                <circle cx="27" cy="18" r="2" stroke="#60a5fa" stroke-width="1.2"/>
-                <line x1="24" y1="12" x2="25" y2="12" stroke="#60a5fa" stroke-width="1.2"/>
-                <line x1="24" y1="18" x2="25" y2="18" stroke="#60a5fa" stroke-width="1.2"/>
-                <line x1="10" y1="24" x2="14" y2="24" stroke="#60a5fa" stroke-width="1.5" opacity="0.3"/>
-                <line x1="12" y1="26" x2="12" y2="24" stroke="#60a5fa" stroke-width="1.5" opacity="0.3"/>
-            </svg>
-
-            <div class="logo-divider"></div>
-
-            <!-- Корпус -->
-            <svg class="pc-icon case" width="36" height="32" viewBox="0 0 36 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="6" width="26" height="20" rx="2" stroke="#60a5fa" stroke-width="1.5"/>
-                <rect x="6" y="8" width="6" height="8" rx="0.5" stroke="#60a5fa" stroke-width="1.2"/>
-                <rect x="16" y="8" width="12" height="8" rx="0.5" stroke="#60a5fa" stroke-width="1.2"/>
-                <rect x="8" y="20" width="18" height="4" rx="0.5" stroke="#60a5fa" stroke-width="1.2"/>
-                <circle cx="10" cy="14" r="2" stroke="#60a5fa" stroke-width="1" opacity="0.5"/>
-                <circle cx="24" cy="14" r="3" stroke="#60a5fa" stroke-width="1" opacity="0.3"/>
-                <text x="7" y="19" font-size="3.5" fill="#60a5fa" opacity="0.4">CASE</text>
-            </svg>
-
-            <div class="logo-divider"></div>
-
-            <span class="logo-text">Барахолка</span>
-            <span class="logo-sub">• б/у техника</span>
-        </div>
+        <h1>🛒 Барахолка</h1>
         <p>Продажа б/у вещей</p>
     </header>
 
